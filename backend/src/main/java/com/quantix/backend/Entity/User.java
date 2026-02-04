@@ -30,6 +30,9 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
+    private String avatar;
+
+    @Column(nullable = false)
     private Boolean isActive = true;
 
     @Column(nullable = false, updatable = false)

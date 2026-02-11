@@ -14,5 +14,7 @@ public interface TokenProvider {
 
     String getRoleFromToken(String token);
 
+    void invalidateToken(String token);
+
     String refreshToken(String token);
 }

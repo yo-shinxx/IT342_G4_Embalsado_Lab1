@@ -4,6 +4,7 @@ import com.quantix.backend.entity.UserRole;
 import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {

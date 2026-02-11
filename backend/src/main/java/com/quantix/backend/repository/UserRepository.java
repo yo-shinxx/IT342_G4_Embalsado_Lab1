@@ -1,6 +1,6 @@
-package com.quantix.backend.Repository;
+package com.quantix.backend.repository;
 
-import com.quantix.backend.Entity.User;
+import com.quantix.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

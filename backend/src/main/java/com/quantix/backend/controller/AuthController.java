@@ -24,7 +24,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            AuthResponse response = authService.registerUser(request);
+            AuthResponse response = authService.register(request);
 
             ResponseCookie cookie = ResponseCookie.from("authToken", response.getToken())
                     .httpOnly(true)

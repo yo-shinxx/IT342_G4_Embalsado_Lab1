@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class JwtTokenProvider implements TokenProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
+    @Value("${JWT_EXPIRATION}")
     private long validityInMilliseconds;
 
     // Simple in-memory token blacklist (use Redis in production)
@@ -45,7 +45,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .subject(user.getEmail())
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey(), Jwts.SIG.HS512)
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -102,7 +102,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .claims(claims)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey(), Jwts.SIG.HS512)
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 

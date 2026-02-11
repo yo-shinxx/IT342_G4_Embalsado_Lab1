@@ -1,0 +1,43 @@
+# Environment Files  
+.env  
+.env.local  
+.env.*.local  
+.env.production  
+.env.development  
+.env.test  
+  
+# Backend  
+backend/target/  
+backend/bin/  
+backend/build/  
+backend/*.jar  
+backend/*.war  
+backend/*.ear  
+backend/src/main/resources/application.properties  
+backend/src/main/resources/application-*.properties  
+  
+# Frontend  
+web/node_modules/  
+web/dist/  
+web/build/  
+web/.next/  
+web/out/  
+web/coverage/  
+  
+# IDE  
+.idea/  
+.vscode/  
+*.iml  
+*.ipr  
+*.iws  
+.classpath  
+.project  
+.settings/  
+  
+# OS  
+.DS_Store  
+Thumbs.db  
+  
+# Logs  
+*.log  
+logs/ 

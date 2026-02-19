@@ -42,10 +42,5 @@ next-env.d.ts
 
 
 # auth & app directories
-web/app/(auth)/*
-web/app/(public)/login/*
-web/app/(public)/register/*
-!web/app/(auth)/.gitkeep
-!web/app/(public)/login/.gitkeep
-!web/app/(public)/register/.gitkeep
+web/.next/
 

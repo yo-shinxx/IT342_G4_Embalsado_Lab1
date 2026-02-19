@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Box, Database, Shield, Zap, BarChart3, Users, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
+import Background from '@/components/background'
 import { useEffect, useState } from 'react'
 
 export default function Home() {
@@ -16,17 +17,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden">
-      {/* Animated background grid */}
-      <div className="fixed inset-0 grid-bg opacity-20" />
-      
-      {/* Scanning line effect */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent scan-line opacity-30" />
-      </div>
-
-      {/* Floating orbs */}
-      <div className="fixed top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-float" />
-      <div className="fixed bottom-20 right-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <Background />
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
@@ -37,12 +28,6 @@ export default function Home() {
                 <Box className="w-6 h-6" />
               </div>
               <span className="text-2xl font-bold gradient-text">Quantix</span>
-            </div>
-
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="hover:text-blue-400 transition-colors">Features</a>
-              <a href="#benefits" className="hover:text-blue-400 transition-colors">Benefits</a>
-              <a href="#about" className="hover:text-blue-400 transition-colors">About</a>
             </div>
 
             <div className="flex items-center gap-4">
@@ -94,30 +79,15 @@ export default function Home() {
               Discover More
             </Button>
           </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mt-20">
-            {[
-              { label: 'Equipment Tracked', value: '500+' },
-              { label: 'Active Users', value: '50+' },
-              { label: 'Transactions/Day', value: '100+' },
-              { label: 'Uptime', value: '99.9%' },
-            ].map((stat, index) => (
-              <div key={index} className="glass p-6 rounded-xl border border-white/10 hover:border-blue-500/50 transition-all">
-                <div className="text-3xl font-bold gradient-text mb-2">{stat.value}</div>
-                <div className="text-sm text-gray-400">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        {/* <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
           <span className="text-sm text-gray-400">Scroll down</span>
           <div className="w-6 h-10 border-2 border-gray-600 rounded-full p-1">
             <div className="w-1.5 h-3 bg-blue-500 rounded-full mx-auto animate-glow" />
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* Features Section */}
@@ -183,61 +153,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section id="benefits" className="relative py-32 px-6 bg-gradient-to-b from-transparent to-blue-950/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Why Choose <span className="gradient-text">Quantix?</span>
-              </h2>
-              <p className="text-xl text-gray-400 mb-8">
-                Built specifically for CIT-U's laboratory operations with modern technology and user-centric design
-              </p>
-
-              <div className="space-y-6">
-                {[
-                  'Reduce equipment loss and misplacement',
-                  'Streamline transaction processing',
-                  'Improve accountability and transparency',
-                  'Generate comprehensive reports instantly',
-                  'Mobile-friendly for on-the-go access',
-                ].map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-5 h-5 text-green-400" />
-                    </div>
-                    <span className="text-lg">{benefit}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link href="/register">
-                <Button size="lg" className="mt-10 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                  Start Managing Today
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="relative">
-              <div className="glass p-8 rounded-2xl border border-white/10">
-                <div className="aspect-square bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl flex items-center justify-center">
-                  <div className="text-center">
-                    <Database className="w-32 h-32 text-blue-400 mx-auto mb-6 animate-float" />
-                    <p className="text-gray-400 text-lg">Centralized Equipment Database</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl" />
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl" />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="relative py-32 px-6">
+      <section id='start' className="relative py-32 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="glass p-12 md:p-16 rounded-3xl border border-white/10">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">

@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class AuthResponse {
     private String token;
-    private String tokenType = "Bearer";
+    private String tokenType;
     private Long userId;
     private String email;
     private String firstName;

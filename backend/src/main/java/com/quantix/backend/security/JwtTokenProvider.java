@@ -92,7 +92,6 @@ public class JwtTokenProvider implements TokenProvider {
     @Override
     public String refreshToken(String token) {
         Claims claims = getClaims(token);
-        Long userId = claims.get("userId", Long.class);
 
         // Create new token with same claims but new expiration
         Date now = new Date();

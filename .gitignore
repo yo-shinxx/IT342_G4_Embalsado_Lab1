@@ -40,12 +40,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
 # auth & app directories
-web/app/(auth)/*
-web/app/(public)/login/*
-web/app/(public)/register/*
-!web/app/(auth)/.gitkeep
-!web/app/(public)/login/.gitkeep
-!web/app/(public)/register/.gitkeep
+web/.next/
+web/node_modules/
+web/out/
+web/build/
+web/.vercel
 
+# OS / Editors
+.DS_Store
+.vscode/
+.idea/
+*.iml
+*.pem
+
+# Java compiled files
+backend/target/
+*.class

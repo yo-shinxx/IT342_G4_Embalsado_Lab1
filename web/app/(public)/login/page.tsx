@@ -31,7 +31,7 @@ export default function Login() {
     }
 
     try {
-      await loginUser({ identifier: email, password })
+      await loginUser({ email, password })
       toast.success('Login successful!')
       router.push("/home")
     } catch (err) {

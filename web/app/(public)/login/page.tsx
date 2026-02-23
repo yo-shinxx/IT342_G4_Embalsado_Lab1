@@ -23,13 +23,12 @@ export default function Login() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
     if (!email.endsWith('@cit.edu')) {
       toast.error('Please use your institutional email (@cit.edu)')
       return
     }
-
-    setLoading(true)
 
     try {
       await loginUser({ identifier: email, password })

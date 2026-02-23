@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const PUBLIC_PATHS = ["/", "/landing", "/login", "/register"]
+const PUBLIC_PATHS = ["/", "/login", "/register"]
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.includes(pathname)
@@ -14,7 +14,7 @@ export function middleware(req: NextRequest) {
 
   if (!isAuthenticated && !isPublic(pathname)) {
     const url = req.nextUrl.clone()
-    url.pathname = "/landing"
+    url.pathname = "/"
     url.search = ""
     return NextResponse.redirect(url)
   }

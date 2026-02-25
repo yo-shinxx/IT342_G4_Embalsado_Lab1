@@ -16,7 +16,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-blue-950 to-slate-900 text-white overflow-hidden">
       <Background />
 
       {/* Navigation */}
@@ -24,7 +24,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <Box className="w-6 h-6" />
               </div>
               <span className="text-2xl font-bold gradient-text">Quantix</span>
@@ -35,7 +35,7 @@ export default function Home() {
                 <Button variant="ghost">Login</Button>
               </Link>
               <Link href="/register">
-                <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                <Button className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
                   Get Started
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -59,7 +59,7 @@ export default function Home() {
             <span className="gradient-text">One-click</span> for Asset{' '}
             <span className="relative">
               Management
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 rounded-full" />
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-linear-to-r from-blue-500 via-cyan-500 to-blue-500 rounded-full" />
             </span>
           </h1>
 
@@ -70,7 +70,7 @@ export default function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <Link href="/register">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg px-8 py-6">
+              <Button size="lg" className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg px-8 py-6">
                 Open Dashboard
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -141,7 +141,7 @@ export default function Home() {
                   key={index}
                   className="glass p-8 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all group hover:scale-105"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-linear-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <Icon className="w-7 h-7 text-blue-400" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
@@ -165,7 +165,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/register">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg px-10">
+                <Button size="lg" className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-lg px-10">
                   Get Started Free
                 </Button>
               </Link>
@@ -184,7 +184,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <Box className="w-5 h-5" />
               </div>
               <span className="text-xl font-bold gradient-text">Quantix</span>

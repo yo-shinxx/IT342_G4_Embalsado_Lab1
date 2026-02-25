@@ -3,12 +3,23 @@
 import { Box, LogOut, Package, Users, FileText, TrendingUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { logoutUser } from '@/lib/api/auth'
 import Background from '@/components/background'
 import Logo from '@/components/logo'
+import { toast } from 'sonner'
+
+type HeaderUser = {
+  email: string
+  firdtName: string
+  lastName: string
+  avatar: string
+}
 
 export default function Dashboard() {
   const router = useRouter()
   const [userEmail, setUserEmail] = useState('')
+    const [user, setUser] = useState<HeaderUser | null>(null)
+
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
@@ -19,10 +30,16 @@ export default function Dashboard() {
     }
   }, [router])
 
-  const handleLogout = () => {
-    localStorage.removeItem('userEmail')
-    localStorage.removeItem('userId')
-    router.push('/')
+  const handleLogout = async () => {
+    try {
+      await logoutUser()
+      toast.success('Logged out successfully!')
+    } catch (err) {
+      toast.error("Failed to logout")
+    } finally {
+      setUser(null)
+      router.replace("/")
+    }
   }
 
   return (

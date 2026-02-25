@@ -1,13 +1,14 @@
 DONE
 - user table
+- register and login logic
+- database using xampp mysql
 
 
 IN PROGRESS
-- backend for authentication
-- other tables for ERD
-- UI design (redo, will redesign and might switch to tailwind)
+- dashboard
+- UI polishing
 
 
 
 TODO
-- connect to database using mysql
+- Microsoft OAuth authentication

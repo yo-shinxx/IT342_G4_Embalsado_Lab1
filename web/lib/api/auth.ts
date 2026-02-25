@@ -2,7 +2,7 @@ import { apiRequest } from "@/lib/api";
 import { AuthResponse } from "@/types/auth";
 
 type RegisterPayload = { firstName: string; lastName: string; email: string; password: string };
-type LoginPayload = { identifier: string; password: string };
+type LoginPayload = { email: string; password: string };
 
 export async function registerUser(data: RegisterPayload) {
   const result = await apiRequest<AuthResponse>("/auth/register", {

@@ -106,11 +106,11 @@ export default function Register() {
       <div style={{ position: 'relative', width: '100%', maxWidth: '448px' }}>
         <Logo />
 
-        <AuthCard title="Create Account" subtitle="Join CIT-U's laboratory management system">
+        <AuthCard title="Sign Up">
 
           <MicrosoftButton onClick={handleMicrosoftSignUp} />
 
-          <Divider text="Or continue with email" />
+          <Divider text="Or" />
 
           <form onSubmit={handleSubmit}>
             <FormInputGrid 

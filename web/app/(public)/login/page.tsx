@@ -65,11 +65,11 @@ export default function Login() {
       <div style={{ position: 'relative', width: '100%', maxWidth: '448px' }}>
         <Logo />
 
-        <AuthCard title="Welcome Back" subtitle="Sign in to access your dashboard">
+        <AuthCard title="Sign In">
 
           <MicrosoftButton onClick={handleMicrosoftSignIn} />
 
-          <Divider text="Or continue with email" />
+          <Divider text="Or" />
 
           <form onSubmit={handleSubmit}>
             <FormInput

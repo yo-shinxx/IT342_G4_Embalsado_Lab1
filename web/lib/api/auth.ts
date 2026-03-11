@@ -1,5 +1,6 @@
 import { apiRequest } from "@/lib/api";
 import { AuthResponse } from "@/types/auth";
+import { GoogleAuthResponse } from "@/types/auth";
 
 type RegisterPayload = { firstName: string; lastName: string; email: string; password: string };
 type LoginPayload = { email: string; password: string };
@@ -52,3 +53,21 @@ export async function logoutUser() {
     }
   }
 }
+
+
+export const authenticateWithGoogle = async (token: string): Promise<GoogleAuthResponse> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Google authentication failed');
+  }
+
+  return response.json();
+};

@@ -14,6 +14,7 @@ import FormInput from '@/components/ui/form-input'
 import PrimaryButton from '@/components/ui/primary-button'
 import Divider from '@/components/ui/divider'
 import MicrosoftButton from '@/components/microsoft-button'
+import GoogleButton from '@/components/google-button'
 
 export default function Login() {
   const router = useRouter()
@@ -68,6 +69,7 @@ export default function Login() {
         <AuthCard title="Sign In">
 
           <MicrosoftButton onClick={handleMicrosoftSignIn} />
+          <GoogleButton />
 
           <Divider text="Or" />
 

@@ -12,6 +12,10 @@ export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
   const isAuthenticated = !!token
 
+  if (pathname.startsWith('/api/auth')) {
+    return NextResponse.next()
+  }
+
   if (!isAuthenticated && !isPublic(pathname)) {
     const url = req.nextUrl.clone()
     url.pathname = "/"

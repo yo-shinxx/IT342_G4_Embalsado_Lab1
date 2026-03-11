@@ -9,6 +9,7 @@ import com.quantix.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +77,63 @@ public class AuthService {
         return buildAuthResponse(token, user);
     }
 
-    // will add OAuth login later
+    @Transactional
+    public AuthResponse authenticateWithGoogleOAuth2User(OAuth2User oAuth2User) {
+        log.info("Authenticating with Google OAuth2");
+
+        // Extract user information from OAuth2User
+        String email = oAuth2User.getAttribute("email");
+        String firstName = oAuth2User.getAttribute("given_name");
+        String lastName = oAuth2User.getAttribute("family_name");
+        String picture = oAuth2User.getAttribute("picture");
+
+        log.info("OAuth2 user info - Email: {}, Name: {} {}", email, firstName, lastName);
+
+        // Validate email
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email not found in Google account");
+        }
+
+        // Validate institutional email
+        if (!isInstitutionalEmail(email)) {
+            throw new IllegalArgumentException("Please use institutional email (@cit.edu)");
+        }
+
+        // Find or create user
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> createUserFromOAuth(email, firstName, lastName, picture));
+
+        // Check if user is active
+        if (!user.getIsActive()) {
+            throw new IllegalArgumentException("Account is inactive. Please contact administrator.");
+        }
+
+        // Update user info if changed
+        boolean updated = false;
+        if (firstName != null && !firstName.equals(user.getFirstName())) {
+            user.setFirstName(firstName);
+            updated = true;
+        }
+        if (lastName != null && !lastName.equals(user.getLastName())) {
+            user.setLastName(lastName);
+            updated = true;
+        }
+        if (picture != null && !picture.equals(user.getAvatar())) {
+            user.setAvatar(picture);
+            updated = true;
+        }
+
+        if (updated) {
+            user = userRepository.save(user);
+            log.info("Updated user information from OAuth2: {}", email);
+        }
+
+        log.info("User authenticated successfully via Google OAuth2: {}", email);
+
+        String token = jwtTokenProvider.generateToken(user);
+
+        return buildAuthResponse(token, user);
+    }
 
 
     public void logout(String token) {
@@ -99,19 +156,38 @@ public class AuthService {
         return email != null && email.toLowerCase().endsWith("@cit.edu");
     }
 
-    private User createUserFromOAuth(String email, OAuthLoginRequest request) {
-        log.info("Creating new user from OAuth: {}", email);
+//    private User createUserFromOAuth(String email, OAuthLoginRequest request) {
+//        log.info("Creating new user from OAuth: {}", email);
+//
+//        // default role
+//        UserRole nasRole = userRoleRepository.findByRoleName("NAS")
+//                .orElseThrow(() -> new RuntimeException("Default role 'NAS' not found"));
+//
+//
+//        User user = new User();
+//        user.setEmail(email);
+//        user.setPassword(passwordEncoder.encode("OAUTH_USER"));
+//        user.setFirstName("OAuth");
+//        user.setLastName("User");
+//        user.setRole(nasRole);
+//        user.setIsActive(true);
+//
+//        return userRepository.save(user);
+//    }
+
+    private User createUserFromOAuth(String email, String firstName, String lastName, String avatar) {
+        log.info("Creating new user from OAuth with full details: {}", email);
 
         // default role
         UserRole nasRole = userRoleRepository.findByRoleName("NAS")
                 .orElseThrow(() -> new RuntimeException("Default role 'NAS' not found"));
 
-
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode("OAUTH_USER"));
-        user.setFirstName("OAuth");
-        user.setLastName("User");
+        user.setFirstName(firstName != null ? firstName : "OAuth");
+        user.setLastName(lastName != null ? lastName : "User");
+        user.setAvatar(avatar != null ? avatar : "https://i.pinimg.com/736x/a9/5e/7a/a95e7a415633a614613e757bac4246ed.jpg");
         user.setRole(nasRole);
         user.setIsActive(true);
 

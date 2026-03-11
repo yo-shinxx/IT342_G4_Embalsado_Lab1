@@ -35,7 +35,7 @@ export default function Dashboard() {
       await logoutUser()
       toast.success('Logged out successfully!')
     } catch (err) {
-      toast.error("Failed to logout")
+      console.log('Logout error:', err)
     } finally {
       setUser(null)
       router.replace("/")

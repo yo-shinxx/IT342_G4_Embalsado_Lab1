@@ -12,17 +12,3 @@ export interface AuthResponse {
 export interface ErrorResponse {
   error: string;
 }
-
-
-export interface GoogleAuthResponse {
-  token: string;
-  tokenType: string;
-  userId: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: {
-    roleId: number;
-    roleName: string;
-  };
-}

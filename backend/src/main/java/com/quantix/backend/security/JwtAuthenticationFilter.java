@@ -30,6 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        if (shouldSkipJwtValidation(path)) {
+            log.debug("Skipping JWT validation for path: {}", path);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             String jwt = getJwtFromRequest(request);
@@ -64,10 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Extract JWT token from Authorization header
-     * Expected format: "Authorization: Bearer <token>"
-     */
+    private boolean shouldSkipJwtValidation(String path) {
+        return path.startsWith("/oauth2/") ||
+                path.startsWith("/login/oauth2/") ||
+                path.equals("/api/auth/register") ||
+                path.equals("/api/auth/login") ||
+                path.equals("/error") ||
+                path.startsWith("/api/auth/oauth2/");
+    }
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 

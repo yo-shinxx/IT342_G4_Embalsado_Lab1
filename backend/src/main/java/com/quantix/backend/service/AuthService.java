@@ -69,7 +69,6 @@ public class AuthService {
         if (!user.getIsActive()) {
             throw new RuntimeException("Account is inactive. Please contact administrator.");
         }
-
         log.info("User logged in successfully: {}", user.getEmail());
 
         String token = jwtTokenProvider.generateToken(user);
@@ -81,7 +80,6 @@ public class AuthService {
     public AuthResponse authenticateWithGoogleOAuth2User(OAuth2User oAuth2User) {
         log.info("Authenticating with Google OAuth2");
 
-        // Extract user information from OAuth2User
         String email = oAuth2User.getAttribute("email");
         String firstName = oAuth2User.getAttribute("given_name");
         String lastName = oAuth2User.getAttribute("family_name");
@@ -89,21 +87,18 @@ public class AuthService {
 
         log.info("OAuth2 user info - Email: {}, Name: {} {}", email, firstName, lastName);
 
-        // Validate email
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email not found in Google account");
         }
 
-        // Validate institutional email
-        if (!isInstitutionalEmail(email)) {
-            throw new IllegalArgumentException("Please use institutional email (@cit.edu)");
-        }
+//        if (!isInstitutionalEmail(email)) {
+//            throw new IllegalArgumentException("Please use institutional email (@cit.edu)");
+//        }
 
         // Find or create user
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> createUserFromOAuth(email, firstName, lastName, picture));
 
-        // Check if user is active
         if (!user.getIsActive()) {
             throw new IllegalArgumentException("Account is inactive. Please contact administrator.");
         }
@@ -156,25 +151,6 @@ public class AuthService {
         return email != null && email.toLowerCase().endsWith("@cit.edu");
     }
 
-//    private User createUserFromOAuth(String email, OAuthLoginRequest request) {
-//        log.info("Creating new user from OAuth: {}", email);
-//
-//        // default role
-//        UserRole nasRole = userRoleRepository.findByRoleName("NAS")
-//                .orElseThrow(() -> new RuntimeException("Default role 'NAS' not found"));
-//
-//
-//        User user = new User();
-//        user.setEmail(email);
-//        user.setPassword(passwordEncoder.encode("OAUTH_USER"));
-//        user.setFirstName("OAuth");
-//        user.setLastName("User");
-//        user.setRole(nasRole);
-//        user.setIsActive(true);
-//
-//        return userRepository.save(user);
-//    }
-
     private User createUserFromOAuth(String email, String firstName, String lastName, String avatar) {
         log.info("Creating new user from OAuth with full details: {}", email);
 
@@ -195,16 +171,21 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(String token, User user) {
-        return AuthResponse.builder()
-                .token(token)
-                .tokenType("Bearer")
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .role(user.getRole())
-                .build();
-    }
+    AuthUser authUser = AuthUser.builder()
+            .id(user.getUserId())
+            .email(user.getEmail())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .role(user.getRole())
+            .build();
+
+    return AuthResponse.builder()
+            .token(token)
+            .tokenType("Bearer")
+            .user(authUser)
+            .build();
+}
+
 
     private UserDTO convertToDTO(User user) {
         return UserDTO.builder()

@@ -15,6 +15,7 @@ import FormInputGrid from '@/components/ui/form-input-grid'
 import PrimaryButton from '@/components/ui/primary-button'
 import Divider from '@/components/ui/divider'
 import MicrosoftButton from '@/components/microsoft-button'
+import GoogleButton from '@/components/google-button'
 
 export default function Register() {
   const router = useRouter()
@@ -108,7 +109,8 @@ export default function Register() {
 
         <AuthCard title="Sign Up">
 
-          <MicrosoftButton onClick={handleMicrosoftSignUp} />
+          {/* <MicrosoftButton onClick={handleMicrosoftSignUp} /> */}
+          <GoogleButton text="Sign up with Google" />
 
           <Divider text="Or" />
 

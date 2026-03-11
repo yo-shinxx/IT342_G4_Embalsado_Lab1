@@ -1,7 +1,6 @@
 package com.quantix.backend.dto;
 
 import com.quantix.backend.entity.User;
-import com.quantix.backend.entity.UserRole;
 import lombok.*;
 
 @Data
@@ -11,18 +10,11 @@ import lombok.*;
 public class AuthResponse {
     private String token;
     private String tokenType;
-    private Long userId;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private UserRole role;
+    private AuthUser user;
 
     public AuthResponse(String token, User user) {
         this.token = token;
         this.tokenType = "Bearer";
-        this.userId = user.getUserId();
-        this.email = user.getEmail();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
+        this.user = new AuthUser(user);
     }
 }

@@ -3,11 +3,14 @@ package com.quantix.backend.service;
 import com.quantix.backend.dto.*;
 import com.quantix.backend.entity.User;
 import com.quantix.backend.entity.UserRole;
+import com.quantix.backend.event.UserLoginEvent;
+import com.quantix.backend.event.UserRegisterEvent;
 import com.quantix.backend.repository.UserRepository;
 import com.quantix.backend.repository.UserRoleRepository;
 import com.quantix.backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class AuthService {
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -49,7 +53,13 @@ public class AuthService {
         user.setIsActive(true);
 
         user = userRepository.save(user);
-        log.info("User registered successfully: {}", user.getEmail());
+
+        eventPublisher.publishEvent(new UserRegisterEvent(
+                String.valueOf(user.getUserId()),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName()
+        ));
 
         String token = jwtTokenProvider.generateToken(user);
 
@@ -69,7 +79,12 @@ public class AuthService {
         if (!user.getIsActive()) {
             throw new RuntimeException("Account is inactive. Please contact administrator.");
         }
-        log.info("User logged in successfully: {}", user.getEmail());
+
+        eventPublisher.publishEvent(new UserLoginEvent(
+                String.valueOf(user.getUserId()),
+                user.getEmail(),
+                "PASSWORD"
+        ));
 
         String token = jwtTokenProvider.generateToken(user);
 
@@ -123,7 +138,11 @@ public class AuthService {
             log.info("Updated user information from OAuth2: {}", email);
         }
 
-        log.info("User authenticated successfully via Google OAuth2: {}", email);
+        eventPublisher.publishEvent(new UserLoginEvent(
+                String.valueOf(user.getUserId()),
+                user.getEmail(),
+                "GOOGLE"
+        ));
 
         String token = jwtTokenProvider.generateToken(user);
 

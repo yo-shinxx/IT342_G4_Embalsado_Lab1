@@ -36,14 +36,4 @@ public class TransactionLog {
     @CreationTimestamp
     @Column(name = "timestamp", nullable = false, updatable = false)
     private LocalDateTime timestamp;
-
-    // equipment-related transactions
-    @Column(name = "equipment_id")
-    private Long equipmentId;
-
-    @Column(name = "old_value", length = 500)
-    private String oldValue;
-
-    @Column(name = "new_value", length = 500)
-    private String newValue;
 }

@@ -14,32 +14,42 @@ import FormInput from '@/components/ui/form-input'
 import PrimaryButton from '@/components/ui/primary-button'
 import Divider from '@/components/ui/divider'
 import MicrosoftButton from '@/components/microsoft-button'
+import GoogleButton from '@/components/google-button'
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  })
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
-    if (!email.endsWith('@cit.edu')) {
-      toast.error('Please use your institutional email (@cit.edu)')
-      return
-    }
-
     try {
-      await loginUser({ email, password })
-      toast.success('Login successful!')
-      router.push("/home")
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message)
-      } else {
-        toast.error("Failed to login")
+      // Validate CIT-U email
+      if (!formData.email.endsWith('@cit.edu')) {
+        toast.error('Please use your institutional email (@cit.edu)')
+        return
       }
+
+      const response = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      })
+
+      // Store auth data
+      localStorage.setItem('authToken', response.token)
+      localStorage.setItem('userEmail', response.user.email)
+      localStorage.setItem('userId', response.user.id.toString())
+
+
+      toast.success('Login successful!')
+      router.push('/home')
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -67,7 +77,8 @@ export default function Login() {
 
         <AuthCard title="Sign In">
 
-          <MicrosoftButton onClick={handleMicrosoftSignIn} />
+          {/* <MicrosoftButton onClick={handleMicrosoftSignIn} /> */}
+          <GoogleButton text="Sign in with Google" />
 
           <Divider text="Or" />
 
@@ -77,8 +88,8 @@ export default function Login() {
               type="email"
               label="Institutional Email"
               placeholder="student@cit.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               icon={Mail}
               required
             />
@@ -88,8 +99,8 @@ export default function Login() {
               type="password"
               label="Password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               icon={Lock}
               required
             />

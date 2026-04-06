@@ -7,11 +7,16 @@ function isPublic(pathname: string) {
   return PUBLIC_PATHS.includes(pathname)
 }
 
-export function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
   const token = req.cookies.get("authToken")?.value
   const pathname = req.nextUrl.pathname
   const isAuthenticated = !!token
 
+  if (pathname.startsWith("/auth")) {
+    return NextResponse.next()
+  }
+
+  // away from protected routes
   if (!isAuthenticated && !isPublic(pathname)) {
     const url = req.nextUrl.clone()
     url.pathname = "/"
@@ -19,6 +24,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  //  away from public routes
   if (isAuthenticated && isPublic(pathname)) {
     const url = req.nextUrl.clone()
     url.pathname = "/home"
@@ -30,5 +36,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/public).*)"],
+  matcher: ["/((?!_next|favicon.ico|api).*)"],
 }

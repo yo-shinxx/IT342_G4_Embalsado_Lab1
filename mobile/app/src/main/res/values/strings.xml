@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">Quantix</string>
+
+    <!-- login -->
+    <string name="login_title">Welcome Back</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button">Sign In</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="or_divider">Or</string>
+
+    <!-- register -->
+    <string name="register_title">Create Account</string>
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="register_button">Sign Up</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <!-- validation msgs -->
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Invalid email format</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_length">Password must be at least 8 characters</string>
+    <string name="error_name_required">This field is required</string>
+
+    <!-- loading and msgs -->
+    <string name="loading">Loading…</string>
+    <string name="login_success">Login successful!</string>
+    <string name="register_success">Registration successful!</string>
 </resources>

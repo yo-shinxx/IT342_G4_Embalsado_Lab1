@@ -1,4 +1,4 @@
-package com.quantix.mobile.ui.auth
+package com.quantix.mobile.ui.auth.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

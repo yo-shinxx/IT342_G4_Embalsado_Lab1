@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import org.json.JSONObject
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -30,22 +31,26 @@ class AuthRepository @Inject constructor(
             val response = authApiService.register(request)
 
             if (response.isSuccessful && response.body() != null) {
-                val apiResponse = response.body()!!
-
-                if (apiResponse.success && apiResponse.data != null) {
+                val authResponse = response.body()!!
                     // save token and user info
-                    tokenManager.saveAuthToken(apiResponse.data.token)
-                    tokenManager.saveUserInfo(
-                        apiResponse.data.user.id,
-                        apiResponse.data.user.email,
-                        apiResponse.data.user.role.roleName
-                    )
-                    emit(Resource.Success(apiResponse.data))
-                } else {
-                    emit(Resource.Error(apiResponse.error?.message ?: "Registration failed"))
-                }
+                tokenManager.saveAuthToken(authResponse.token)
+                tokenManager.saveUserInfo(
+                    authResponse.user.id,
+                    authResponse.user.email,
+                    authResponse.user.role.roleName
+                )
+                emit(Resource.Success(authResponse))
             } else {
-                emit(Resource.Error("Network error: ${response.code()}"))
+                // Parse error message from response body
+                val errorMessage = try {
+                    response.errorBody()?.string()?.let { errorBody ->
+                        val json = JSONObject(errorBody)
+                        json.optString("error", "Registration failed")
+                    } ?: "Registration failed: ${response.code()}"
+                } catch (e: Exception) {
+                    "Registration failed"
+                }
+                emit(Resource.Error(errorMessage))
             }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
@@ -60,22 +65,26 @@ class AuthRepository @Inject constructor(
             val response = authApiService.login(request)
 
             if (response.isSuccessful && response.body() != null) {
-                val apiResponse = response.body()!!
+                val authResponse = response.body()!!
 
-                if (apiResponse.success && apiResponse.data != null) {
-                    // save token and user info
-                    tokenManager.saveAuthToken(apiResponse.data.token)
-                    tokenManager.saveUserInfo(
-                        apiResponse.data.user.id,
-                        apiResponse.data.user.email,
-                        apiResponse.data.user.role.roleName
-                    )
-                    emit(Resource.Success(apiResponse.data))
-                } else {
-                    emit(Resource.Error(apiResponse.error?.message ?: "Login failed"))
-                }
+                tokenManager.saveAuthToken(authResponse.token)
+                tokenManager.saveUserInfo(
+                    authResponse.user.id,
+                    authResponse.user.email,
+                    authResponse.user.role.roleName
+                )
+                emit(Resource.Success(authResponse))
             } else {
-                emit(Resource.Error("Network error: ${response.code()}"))
+                // Parse error message from response body
+                val errorMessage = try {
+                    response.errorBody()?.string()?.let { errorBody ->
+                        val json = JSONObject(errorBody)
+                        json.optString("error", "Login failed")
+                    } ?: "Login failed: ${response.code()}"
+                } catch (e: Exception) {
+                    "Login failed"
+                }
+                emit(Resource.Error(errorMessage))
             }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))

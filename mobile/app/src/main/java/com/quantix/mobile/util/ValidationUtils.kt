@@ -5,7 +5,6 @@ object ValidationUtils {
     fun validateEmail(email: String): String? {
         return when {
             email.isBlank() -> "Email is required"
-            !email.endsWith("@cit.edu") -> "Please use institutional email (@cit.edu)"
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Invalid email format"
             else -> null
         }

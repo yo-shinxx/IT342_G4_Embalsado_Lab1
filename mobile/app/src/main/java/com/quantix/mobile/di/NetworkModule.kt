@@ -1,5 +1,6 @@
 package com.quantix.mobile.di
 
+import com.google.gson.GsonBuilder
 import com.quantix.mobile.BuildConfig
 import com.quantix.mobile.data.api.AuthApiService
 import dagger.Module
@@ -38,7 +39,13 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(
+                    GsonBuilder()
+                        .setLenient()
+                        .setPrettyPrinting()
+                        .create()
+                )
+            )
             .build()
     }
 

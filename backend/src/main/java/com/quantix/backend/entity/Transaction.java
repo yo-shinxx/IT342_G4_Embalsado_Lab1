@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Table(name = "transactions")
@@ -13,26 +17,32 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
     private Long transactionId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "equipment_id", nullable = false)
-    private Equipment equipmentId;
+    private Equipment equipment;
 
-    @Column(name = "action_type", nullable = false)
-    private String actionType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "action_type", nullable = false, length = 50)
+    private ActionType actionType;
 
-    @Column(name = "timestamp", nullable = false, updatable = false)
+    @Column(name = "timestamp", nullable = false)
+    @CreationTimestamp
     private LocalDateTime timestamp;
 
-    @PrePersist
-    protected void onCreate() {
-        timestamp = LocalDateTime.now();
+    public enum ActionType {
+        ADD,
+        UPDATE,
+        STATUS_CHANGE,
+        ARCHIVE
     }
 }

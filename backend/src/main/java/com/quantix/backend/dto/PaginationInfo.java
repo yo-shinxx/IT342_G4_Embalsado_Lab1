@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
-    private Long id;
-    private String name;
-    private String description;
+public class PaginationInfo {
+    private int page;
+    private int limit;
+    private long total;
+    private int pages;
 }

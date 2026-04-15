@@ -14,15 +14,29 @@ public class TransactionLoggerService {
 
     private final TransactionLogRepository transactionLogRepository;
 
-    public void log(String action, String userId, String email, String details) {
-        log.info("[TRANSACTION] action={}, userId={}, email={}, details={}",
-                action, userId, email, details);
+    public void log(String action, Long userId, String email, String details) {
+        log.info("[TRANSACTION] action={}, userId={}, email={}, details={}", action, userId, email, details);
 
         // save to database (for transaction history feature)
         TransactionLog transactionLog = TransactionLog.builder()
                 .action(action)
                 .userId(userId)
                 .email(email)
+                .details(details)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        transactionLogRepository.save(transactionLog);
+    }
+
+    public void logEquipmentAction(String action, Long userId, String email, String equipmentName, String details) {
+        log.info("[TRANSACTION] action={}, userId={}, email={}, equipment={}, details={}", action, userId, email, equipmentName, details);
+
+        TransactionLog transactionLog = TransactionLog.builder()
+                .action(action)
+                .userId(userId)
+                .email(email)
+                .equipmentName(equipmentName)
                 .details(details)
                 .timestamp(LocalDateTime.now())
                 .build();

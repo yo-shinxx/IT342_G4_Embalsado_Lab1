@@ -14,17 +14,17 @@ import java.util.List;
 @Repository
 public interface TransactionLogRepository extends JpaRepository<TransactionLog, Long> {
 
-    List<TransactionLog> findByUserIdOrderByTimestampDesc(String userId);
+    List<TransactionLog> findByUserIdOrderByTimestampDesc(Long userId);
 
-    Page<TransactionLog> findByUserId(String userId, Pageable pageable);
+    Page<TransactionLog> findByUserId(Long userId, Pageable pageable);
 
     List<TransactionLog> findByAction(String action);
 
     List<TransactionLog> findByTimestampBetween(LocalDateTime start, LocalDateTime end);
 
-    List<TransactionLog> findByUserIdAndAction(String userId, String action);
+    List<TransactionLog> findByUserIdAndAction(Long userId, String action);
 
-    long countByUserId(String userId);
+    long countByUserId(Long userId);
 
     @Query("SELECT t FROM TransactionLog t ORDER BY t.timestamp DESC")
     List<TransactionLog> findRecentTransactions(Pageable pageable);

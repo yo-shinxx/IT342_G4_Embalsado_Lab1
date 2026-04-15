@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EquipmentArchivedEvent {
-    private String userId;
+    private Long userId;
     private String email;
     private Long equipmentId;
     private String equipmentName;

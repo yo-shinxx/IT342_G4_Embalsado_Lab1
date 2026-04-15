@@ -35,8 +35,6 @@ public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final TransactionRepository transactionRepository;
-    private final TransactionLoggerService transactionLogger;
     private final ApplicationEventPublisher eventPublisher;
 
     public PaginatedResponse<EquipmentDTO> getAllEquipment(
@@ -117,7 +115,7 @@ public class EquipmentService {
         equipment = equipmentRepository.save(equipment);
 
         eventPublisher.publishEvent(new EquipmentCreatedEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 equipment.getEquipmentId(),
                 equipment.getName(),
@@ -171,7 +169,7 @@ public class EquipmentService {
         equipment = equipmentRepository.save(equipment);
 
         eventPublisher.publishEvent(new EquipmentUpdatedEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 equipment.getEquipmentId(),
                 equipment.getName(),
@@ -206,7 +204,7 @@ public class EquipmentService {
                 "newStatus", newStatus
         );
         eventPublisher.publishEvent(new EquipmentStatusChangedEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 equipment.getEquipmentId(),
                 equipment.getName(),
@@ -232,7 +230,7 @@ public class EquipmentService {
         equipmentRepository.save(equipment);
 
         eventPublisher.publishEvent(new EquipmentArchivedEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 equipment.getEquipmentId(),
                 equipment.getName()

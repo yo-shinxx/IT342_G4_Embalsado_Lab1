@@ -9,7 +9,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EquipmentUpdatedEvent {
-    private String userId;
+    private Long userId;
     private String email;
     private Long equipmentId;
     private String equipmentName;

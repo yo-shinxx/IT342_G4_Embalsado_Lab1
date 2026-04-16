@@ -59,7 +59,7 @@ export default function AddEquipmentModal({
     setLoading(true)
 
     try {
-      const response = await apiRequest('/admin/equipment', {
+      const response = await apiRequest('/equipments', {
         method: 'POST',
         body: JSON.stringify(formData)
       })
@@ -95,13 +95,11 @@ export default function AddEquipmentModal({
 
   return (
     <>
-      {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
         onClick={onClose}
       />
       
-      {/* Modal */}
       <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-slate-900 rounded-2xl border border-white/10 shadow-2xl z-50 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-slate-900 border-b border-white/10 px-6 py-4 flex justify-between items-center">
@@ -114,7 +112,6 @@ export default function AddEquipmentModal({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Basic Information Section */}
           <div>
@@ -130,7 +127,6 @@ export default function AddEquipmentModal({
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500 transition-all"
-                  placeholder="e.g., Digital Oscilloscope"
                 />
               </div>
               
@@ -159,7 +155,6 @@ export default function AddEquipmentModal({
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="e.g., DSO-X 2000"
                 />
               </div>
 
@@ -172,7 +167,6 @@ export default function AddEquipmentModal({
                   value={formData.manufacturer}
                   onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="e.g., Keysight, Tektronix"
                 />
               </div>
             </div>
@@ -191,7 +185,6 @@ export default function AddEquipmentModal({
                   value={formData.specifications}
                   onChange={(e) => setFormData({ ...formData, specifications: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="Technical specifications, features, etc."
                 />
               </div>
 
@@ -232,7 +225,6 @@ export default function AddEquipmentModal({
                   value={formData.serialNumber}
                   onChange={(e) => setFormData({ ...formData, serialNumber: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="SN-123456"
                 />
               </div>
 
@@ -252,20 +244,13 @@ export default function AddEquipmentModal({
             </div>
           </div>
 
-          {/* Media Section */}
+          {/* img url for now, will implement upload img later */}
           <div>
             <h3 className="text-sm font-semibold text-sky-400 mb-3">Media</h3>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1">
-                Image URL
+                Image
               </label>
-              <input
-                type="url"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                placeholder="https://example.com/image.jpg"
-              />
             </div>
           </div>
 
@@ -281,7 +266,7 @@ export default function AddEquipmentModal({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold hover:opacity-90 transition-all disabled:opacity-50"
+              className="px-4 py-2 rounded-lg bg-linear-to-r from-sky-500 to-cyan-500 text-white font-semibold hover:opacity-90 transition-all disabled:opacity-50"
             >
               {loading ? 'Adding...' : 'Add Equipment'}
             </button>

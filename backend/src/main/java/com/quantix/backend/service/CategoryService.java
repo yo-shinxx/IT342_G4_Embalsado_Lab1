@@ -18,6 +18,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategories() {
         log.info("Fetching all categories");
         return categoryRepository.findAll().stream()
@@ -25,6 +26,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public CategoryDTO getCategoryById(Long id) {
         log.info("Fetching category by ID: {}", id);
         Category category = categoryRepository.findById(id)
@@ -35,6 +37,10 @@ public class CategoryService {
     @Transactional
     public void initializeDefaultCategories() {
         log.info("Initializing default categories");
+        if (categoryRepository.count() > 0) {
+            log.info("Categories already exist, skipping initialization");
+            return;
+        }
 
         String[][] defaultCategories = {
                 // for now, in the context of a computer engineering laboratory

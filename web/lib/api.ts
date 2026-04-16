@@ -1,5 +1,16 @@
 const API_BASE_URL = "http://localhost:8080/api";
 
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error: {
+    code: string;
+    message: string;
+    details?: any;
+  } | null;
+  timestamp: string;
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -57,6 +68,10 @@ export async function apiRequest<T>(
         : `Request failed with status ${res.status}`);
 
     throw new Error(msg);
+  }
+
+   if (data && typeof data === 'object' && 'data' in data) {
+    return (data as ApiResponse<T>).data;
   }
 
   return data as T;

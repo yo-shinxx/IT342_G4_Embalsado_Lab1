@@ -23,16 +23,6 @@ public class TransactionHistoryListener {
     }
 
     @EventListener
-    public void onUserLogin(UserLoginEvent event) {
-        transactionLogger.log(
-                "LOGIN",
-                event.getUserId(),
-                event.getEmail(),
-                "User logged in via " + event.getLoginMethod()
-        );
-    }
-
-    @EventListener
     public void onEquipmentCreated(EquipmentCreatedEvent event) {
         transactionLogger.log(
                 "EQUIPMENT_CREATED",

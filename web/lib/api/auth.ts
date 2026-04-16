@@ -59,6 +59,7 @@ export async function logoutUser() {
       localStorage.removeItem("userEmail");
       localStorage.removeItem("userId");
       localStorage.removeItem("authToken");
+      localStorage.removeItem('userRole');
       document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   }

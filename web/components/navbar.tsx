@@ -7,12 +7,14 @@ import { useEffect, useState } from 'react'
 import { logoutUser } from '@/lib/api/auth'
 import { toast } from 'sonner'
 import { apiRequest } from '@/lib/api'
+import { useRole } from '@/components/role-provider'
 
 type HeaderUser = {
   email: string
   firstName: string
   lastName: string
   avatar: string
+  role: string
 }
 
 type NavItem = {
@@ -32,6 +34,7 @@ const navItems: NavItem[] = [
 export default function Navbar() {
     const router = useRouter()
     const pathname = usePathname()
+    const { isCoordinator, role } = useRole()
     const [user, setUser] = useState<HeaderUser | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -53,7 +56,8 @@ export default function Navbar() {
                     email: userData.email,
                     firstName: userData.firstName,
                     lastName: userData.lastName,
-                    avatar: userData.avatar
+                    avatar: userData.avatar,
+                    role: userData.role || 'NAS'
                 })
             } catch (error) {
                 console.error('Failed to fetch user profile:', error)
@@ -108,7 +112,7 @@ export default function Navbar() {
                     <div className="grid place-items-center text-center p-2.5">
                         <p className="text-base font-bold m-0">{user?.firstName} {user?.lastName}</p>
                         <p className="text-sm text-[#94a3b8] mt-1 mb-0">{user?.email}</p>
-                        <p className="text-xs text-[#94a3b8] mt-2 mb-0">NAS</p>
+                        <p className="text-xs text-[#94a3b8] mt-2 mb-0">{isCoordinator ? 'Coordinator' : 'NAS'}</p>
                     </div>
                 </div>
                 

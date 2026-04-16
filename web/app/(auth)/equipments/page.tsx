@@ -11,11 +11,11 @@ import AddEquipmentModal from '@/components/modals/add-equipment-modal'
 import { equipmentApi, Equipment, Category } from '@/lib/api/equipment'
 import { apiRequest } from '@/lib/api'
 import { toast } from 'sonner'
-import { useUserRole } from '@/hooks/useUserRole'
+import { useRole } from '@/components/role-provider'
 
 export default function EquipmentPage() {
   const router = useRouter()
-  const { isCoordinator, loading: roleLoading } = useUserRole()
+  const { isCoordinator } = useRole()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -97,19 +97,6 @@ export default function EquipmentPage() {
   }
 
   const categoryOptions = ['All', ...categories.map(c => c.name)]
-
-  if (loading || roleLoading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
-        <Background />
-        <Navbar />
-        <div className="min-h-screen flex flex-col items-center justify-center" style={{ marginLeft: '280px' }}>
-          <div className="w-12 h-12 rounded-full border-2 border-sky-500/30 border-t-sky-500 animate-spin" />
-          <p className="mt-4 text-slate-400">Loading equipment...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">

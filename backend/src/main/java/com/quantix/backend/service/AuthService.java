@@ -55,7 +55,7 @@ public class AuthService {
         user = userRepository.save(user);
 
         eventPublisher.publishEvent(new UserRegisterEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName()
@@ -81,7 +81,7 @@ public class AuthService {
         }
 
         eventPublisher.publishEvent(new UserLoginEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 "PASSWORD"
         ));
@@ -139,7 +139,7 @@ public class AuthService {
         }
 
         eventPublisher.publishEvent(new UserLoginEvent(
-                String.valueOf(user.getUserId()),
+                user.getUserId(),
                 user.getEmail(),
                 "GOOGLE"
         ));

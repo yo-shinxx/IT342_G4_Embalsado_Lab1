@@ -13,7 +13,6 @@ import AuthCard from '@/components/ui/auth-card'
 import FormInput from '@/components/ui/form-input'
 import PrimaryButton from '@/components/ui/primary-button'
 import Divider from '@/components/ui/divider'
-import MicrosoftButton from '@/components/microsoft-button'
 import GoogleButton from '@/components/google-button'
 
 export default function LoginPage() {
@@ -29,22 +28,14 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Validate CIT-U email
-      if (!formData.email.endsWith('@cit.edu')) {
-        toast.error('Please use your institutional email (@cit.edu)')
-        return
-      }
-
       const response = await loginUser({
         email: formData.email,
         password: formData.password,
       })
 
-      // Store auth data
       localStorage.setItem('authToken', response.token)
       localStorage.setItem('userEmail', response.user.email)
       localStorage.setItem('userId', response.user.id.toString())
-
 
       toast.success('Login successful!')
       router.push('/home')
@@ -55,31 +46,15 @@ export default function LoginPage() {
     }
   }
 
-  const handleMicrosoftSignIn = () => {
-    toast.info('Microsoft OAuth will be implemented soon')
-  }
-
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #020617, #1e3a8a, #020617)',
-      color: 'white',
-      overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '80px 24px'
-    }}>
+    <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#1e3a8a] to-[#020617] text-white overflow-hidden flex items-center justify-center p-20">
       <Background />
 
-      <div style={{ position: 'relative', width: '100%', maxWidth: '448px' }}>
+      <div className="relative w-full max-w-md">
         <Logo />
 
         <AuthCard title="Sign In">
-
-          {/* <MicrosoftButton onClick={handleMicrosoftSignIn} /> */}
           <GoogleButton text="Sign in with Google" />
-
           <Divider text="Or" />
 
           <form onSubmit={handleSubmit}>
@@ -109,19 +84,19 @@ export default function LoginPage() {
               {loading ? 'Logging in...' : 'Log in'}
             </PrimaryButton>
 
-            <p style={{ marginTop: '16px', textAlign: 'center', fontSize: '14px' }}>
-              <span style={{ color: '#9ca3af' }}>Don't have an account? </span>
-              <Link href="/register" style={{ color: '#60a5fa', fontWeight: '600', textDecoration: 'none' }}>
+            <p className="mt-4 text-center text-sm">
+              <span className="text-gray-400">Don't have an account? </span>
+              <Link href="/register" className="text-blue-400 font-semibold no-underline hover:text-blue-300">
                 Sign Up
               </Link>
             </p>
           </form>
         </AuthCard>
 
-        <div style={{ marginTop: '24px', textAlign: 'center' }}>
-          <p style={{ fontSize: '14px', color: '#6b7280' }}>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
             Need help? Contact{' '}
-            <a href="mailto:support@cit.edu" style={{ color: '#60a5fa', textDecoration: 'none' }}>
+            <a href="mailto:support@cit.edu" className="text-blue-400 no-underline hover:text-blue-300">
               support@cit.edu
             </a>
           </p>

@@ -3,6 +3,8 @@ package com.quantix.backend.config;
 import com.quantix.backend.security.JwtAuthenticationFilter;
 import com.quantix.backend.security.OAuth2LoginFailureHandler;
 import com.quantix.backend.security.OAuth2LoginSuccessHandler;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,18 +51,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Authentication required\"}");
+                })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
                                 "/oauth2/**",
                                 "/login/oauth2/**",
+                                "/api/auth/logout",
                                 "/error"
                         ).permitAll()
 
                         // protected
                         .requestMatchers("/api/auth/me").authenticated()
-                        .requestMatchers("/api/auth/logout").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_COORDINATOR")
 
                         .anyRequest().authenticated()

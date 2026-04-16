@@ -1,14 +1,31 @@
 const API_BASE_URL = "http://localhost:8080/api";
 
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error: {
+    code: string;
+    message: string;
+    details?: any;
+  } | null;
+  timestamp: string;
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
+  const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string> | undefined),
   };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   if (!("Content-Type" in headers) && !(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
@@ -51,6 +68,10 @@ export async function apiRequest<T>(
         : `Request failed with status ${res.status}`);
 
     throw new Error(msg);
+  }
+
+   if (data && typeof data === 'object' && 'data' in data) {
+    return (data as ApiResponse<T>).data;
   }
 
   return data as T;

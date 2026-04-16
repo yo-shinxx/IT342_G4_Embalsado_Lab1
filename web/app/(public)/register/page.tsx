@@ -14,7 +14,6 @@ import FormInput from '@/components/ui/form-input'
 import FormInputGrid from '@/components/ui/form-input-grid'
 import PrimaryButton from '@/components/ui/primary-button'
 import Divider from '@/components/ui/divider'
-import MicrosoftButton from '@/components/microsoft-button'
 import GoogleButton from '@/components/google-button'
 
 export default function Register() {
@@ -66,52 +65,25 @@ export default function Register() {
     }
   }
 
-  const handleMicrosoftSignUp = () => {
-    toast.info('Microsoft OAuth will be implemented soon')
-  }
-
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom right, #020617, #1e3a8a, #020617)',
-      color: 'white',
-      overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '80px 24px'
-    }}>
+    <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#1e3a8a] to-[#020617] text-white overflow-hidden flex items-center justify-center p-20">
       <Background />
 
       <Link 
         href="/" 
-        style={{
-          position: 'fixed',
-          top: '24px',
-          left: '24px',
-          zIndex: 50,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          color: '#9ca3af',
-          textDecoration: 'none',
-          transition: 'color 0.2s'
-        }}
+        className="fixed top-6 left-6 z-50 flex items-center gap-2 text-gray-400 no-underline hover:text-gray-300 transition-colors"
       >
-        <svg style={{ width: '20px', height: '20px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         <span>Back to Home</span>
       </Link>
 
-      <div style={{ position: 'relative', width: '100%', maxWidth: '448px' }}>
+      <div className="relative w-full max-w-md">
         <Logo />
 
         <AuthCard title="Sign Up">
-
-          {/* <MicrosoftButton onClick={handleMicrosoftSignUp} /> */}
           <GoogleButton text="Sign up with Google" />
-
           <Divider text="Or" />
 
           <form onSubmit={handleSubmit}>
@@ -125,7 +97,7 @@ export default function Register() {
                   value: firstName,
                   onChange: (e) => setFirstName(e.target.value),
                   icon: User,
-                  required: true
+                  required: true,
                 },
                 {
                   id: 'lastName',
@@ -135,7 +107,7 @@ export default function Register() {
                   value: lastName,
                   onChange: (e) => setLastName(e.target.value),
                   icon: User,
-                  required: true
+                  required: true,
                 }
               ]}
             />
@@ -150,7 +122,7 @@ export default function Register() {
               icon={Mail}
               required
             />
-            <p style={{ marginTop: '-8px', marginBottom: '16px', fontSize: '12px', color: '#6b7280' }}>
+            <p className="text-xs text-gray-500 -mt-2 mb-4">
               Use your CIT-U institutional email
             </p>
 
@@ -180,19 +152,19 @@ export default function Register() {
               {loading ? 'Creating account...' : 'Create Account'}
             </PrimaryButton>
 
-            <p style={{ marginTop: '16px', textAlign: 'center', fontSize: '14px' }}>
-              <span style={{ color: '#9ca3af' }}>Already have an account? </span>
-              <Link href="/login" style={{ color: '#60a5fa', fontWeight: '600', textDecoration: 'none' }}>
+            <p className="mt-4 text-center text-sm">
+              <span className="text-gray-400">Already have an account? </span>
+              <Link href="/login" className="text-blue-400 font-semibold no-underline hover:text-blue-300">
                 Log in
               </Link>
             </p>
           </form>
         </AuthCard>
 
-        <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: '#6b7280' }}>
+        <p className="mt-6 text-center text-xs text-gray-500">
           By creating an account, you agree to our{' '}
-          <a href="#" style={{ color: '#60a5fa', textDecoration: 'none' }}>Terms of Service</a> and{' '}
-          <a href="#" style={{ color: '#60a5fa', textDecoration: 'none' }}>Privacy Policy</a>
+          <a href="#" className="text-blue-400 no-underline hover:text-blue-300">Terms of Service</a> and{' '}
+          <a href="#" className="text-blue-400 no-underline hover:text-blue-300">Privacy Policy</a>
         </p>
       </div>
     </div>

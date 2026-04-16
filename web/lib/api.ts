@@ -6,9 +6,15 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
+  const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string> | undefined),
   };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   if (!("Content-Type" in headers) && !(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";

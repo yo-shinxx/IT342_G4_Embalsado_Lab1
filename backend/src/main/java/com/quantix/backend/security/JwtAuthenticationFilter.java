@@ -30,30 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String path = request.getRequestURI();
-
-        if (shouldSkipJwtValidation(path)) {
-            log.debug("Skipping JWT validation for path: {}", path);
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromToken(jwt);
                 String email = tokenProvider.getEmailFromToken(jwt);
                 String role = tokenProvider.getRoleFromToken(jwt);
 
                 // Create authentication token
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId,  // Principal (user ID)
-                                null,    // Credentials (not needed for JWT)
-                                Collections.singletonList(authority)
-                        );
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(authority));
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
@@ -69,15 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private boolean shouldSkipJwtValidation(String path) {
-        return path.startsWith("/oauth2/") ||
-                path.startsWith("/login/oauth2/") ||
-                path.equals("/api/auth/register") ||
-                path.equals("/api/auth/login") ||
-                path.equals("/error") ||
-                path.startsWith("/api/auth/oauth2/");
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

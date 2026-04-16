@@ -41,6 +41,9 @@ export async function loginUser(data: LoginPayload) {
     if (result.user.id) {
       localStorage.setItem("userId", result.user.id.toString());
     }
+    if (result.token) {
+      localStorage.setItem("authToken", result.token);
+    }
   }
 
   return result;

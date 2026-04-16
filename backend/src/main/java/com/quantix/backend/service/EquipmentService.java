@@ -4,7 +4,6 @@ import com.quantix.backend.dto.*;
 import com.quantix.backend.entity.Category;
 import com.quantix.backend.entity.Equipment;
 import com.quantix.backend.entity.Equipment.ConditionStatus;
-import com.quantix.backend.entity.Transaction;
 import com.quantix.backend.entity.User;
 import com.quantix.backend.event.EquipmentArchivedEvent;
 import com.quantix.backend.event.EquipmentCreatedEvent;
@@ -12,7 +11,6 @@ import com.quantix.backend.event.EquipmentStatusChangedEvent;
 import com.quantix.backend.event.EquipmentUpdatedEvent;
 import com.quantix.backend.repository.CategoryRepository;
 import com.quantix.backend.repository.EquipmentRepository;
-import com.quantix.backend.repository.TransactionRepository;
 import com.quantix.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -198,11 +196,6 @@ public class EquipmentService {
         equipment.setConditionStatus(ConditionStatus.valueOf(newStatus));
         equipment = equipmentRepository.save(equipment);
 
-        // Log transaction
-        Map<String, Object> details = Map.of(
-                "previousStatus", previousStatus,
-                "newStatus", newStatus
-        );
         eventPublisher.publishEvent(new EquipmentStatusChangedEvent(
                 user.getUserId(),
                 user.getEmail(),

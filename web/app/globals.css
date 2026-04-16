@@ -21,6 +21,8 @@
   --input: 217.2 32.6% 17.5%;
   --ring: 217.2 91.2% 59.8%;
   --radius: 0.5rem;
+  --navbar-width: 280px;
+  --header-height: 80px;
 }
 
 @theme inline {

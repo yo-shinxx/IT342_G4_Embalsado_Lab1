@@ -8,6 +8,7 @@ import Background from '@/components/background'
 import Navbar from '@/components/navbar'
 import Logo from '@/components/logo'
 import { toast } from 'sonner'
+import Header from '@/components/header'
 
 type HeaderUser = {
   email: string
@@ -54,7 +55,6 @@ const recentActivity = [
 export default function Dashboard() {
   const router = useRouter()
   const [userEmail, setUserEmail] = useState('')
-   const [user, setUser] = useState<HeaderUser | null>(null)
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
@@ -66,147 +66,119 @@ export default function Dashboard() {
   }, [router])
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #020617 0%, #0f172a 45%, #020617 100%)',
-      color: 'white',
-      overflow: 'hidden',
-    }}>
+    <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
       <Background />
+      
+      {/* Fixed Navbar */}
+      <Navbar />
 
-      <div style={{ display: 'flex', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
-        <aside style={{
-          width: '280px',
-          minHeight: '100vh',
-          background: 'rgba(8, 15, 41, 0.96)',
-          borderRight: '1px solid rgba(255,255,255,0.08)',
-          padding: '32px 24px',
-          boxSizing: 'border-box',
-        }}>
+      {/* This container is pushed right by the navbar width */}
+      <div className="min-h-screen flex flex-col" style={{ marginLeft: '280px' }}>
+        {/* Header - now inside the pushed container */}
+        <Header />
 
-        <Navbar />
+        {/* Main Content */}
+        <main className="flex-1 p-8 pt-6 overflow-y-auto">
+          <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+            {stats.map((item) => {
+              const Icon = item.icon
+              return (
+                <div key={item.label} className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] p-5 shadow-[0_30px_60px_rgba(0,0,0,0.18)]">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="m-0 text-[#94a3b8] text-xs tracking-[0.25em] uppercase">{item.label}</p>
+                      <p className="mt-3.5 mb-0 text-4xl font-bold">{item.value}</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-2xl grid place-items-center text-white" style={{ background: item.accent }}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
 
-        </aside>
+          <div className="grid gap-6 grid-cols-[1.8fr_1fr] mt-6">
+            {/* Chart Section */}
+            <div className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] shadow-[0_30px_60px_rgba(0,0,0,0.16)] p-7">
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <p className="m-0 text-[#94a3b8] text-xs tracking-[0.24em] uppercase">Statistics</p>
+                  <h2 className="mt-3.5 mb-0 text-3xl font-bold">March 2026</h2>
+                </div>
+                <div className="flex items-center gap-2 text-[#94a3b8]">
+                  <span className="text-xs">Updated</span>
+                  <TrendingUp className="w-5 h-5 text-[#4ade80]" />
+                </div>
+              </div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '28px 32px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div>
-                <h1 style={{ margin: '8px 0 0', fontSize: '28px', fontWeight: 700 }}>Dashboard</h1>
+              <div className="mt-7 min-h-[320px] rounded-3xl bg-[rgba(255,255,255,0.03)] p-6 relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.05)] to-transparent rounded-3xl pointer-events-none" />
+                <div className="w-full h-full flex flex-col justify-between">
+                  <div className="flex justify-between text-[#94a3b8] text-xs mb-5">
+                    <span>0k</span>
+                    <span>100k</span>
+                    <span>200k</span>
+                    <span>500k</span>
+                  </div>
+                  <div className="relative flex-1 flex items-end justify-between">
+                    <div className="absolute inset-0 grid grid-rows-5 gap-0 opacity-18">
+                      {Array.from({ length: 5 }).map((_, index) => <div key={index} className="border-t border-dashed border-[rgba(255,255,255,0.1)]" />)}
+                    </div>
+                    <div className="h-[calc(100%-20px)] w-full relative">
+                      <svg viewBox="0 0 600 320" className="w-full h-full">
+                        <path d="M20 260 C120 180 200 160 280 200 S460 180 520 140" fill="none" stroke="#38bdf8" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />
+                        <path d="M20 260 C120 210 200 190 280 220 S460 200 520 170" fill="none" stroke="#22c55e" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" opacity="0.7" />
+                        <circle cx="50" cy="250" r="6" fill="#38bdf8" />
+                        <circle cx="180" cy="190" r="6" fill="#38bdf8" />
+                        <circle cx="310" cy="210" r="6" fill="#38bdf8" />
+                        <circle cx="430" cy="180" r="6" fill="#38bdf8" />
+                        <circle cx="520" cy="145" r="6" fill="#38bdf8" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <button style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.08)', display: 'grid', placeItems: 'center', cursor: 'pointer' }}>
-              <Bell style={{ width: '20px', height: '20px', color: '#93c5fd' }} />
-            </button>
-          </header>
+            {/* Activity Section */}
+            <div className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] shadow-[0_30px_60px_rgba(0,0,0,0.16)] p-7 flex flex-col">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="m-0 text-[#94a3b8] text-xs tracking-[0.24em] uppercase">Recent Transactions</p>
+                  <h2 className="mt-3.5 mb-0 text-2xl font-bold">Latest activity</h2>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-[rgba(255,255,255,0.08)] grid place-items-center text-[#38bdf8]">
+                  <FileText className="w-5 h-5" />
+                </div>
+              </div>
 
-          <main style={{ padding: '24px 32px 40px' }}>
-            <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
-              {stats.map((item) => {
-                const Icon = item.icon
-                return (
-                  <div key={item.label} style={{
-                    borderRadius: '24px',
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    padding: '22px',
-                    boxShadow: '0 30px 60px rgba(0,0,0,0.18)',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="mt-6 grid gap-4">
+                {recentActivity.map((item) => (
+                  <div key={item.user} className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)]">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[rgba(56,189,248,0.18)] to-[rgba(34,197,94,0.18)] grid place-items-center font-bold text-[#38bdf8]">
+                        {item.initials}
+                      </div>
                       <div>
-                        <p style={{ margin: 0, color: '#94a3b8', fontSize: '12px', letterSpacing: '0.25em', textTransform: 'uppercase' }}>{item.label}</p>
-                        <p style={{ margin: '14px 0 0', fontSize: '34px', fontWeight: 700 }}>{item.value}</p>
-                      </div>
-                      <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: item.accent, display: 'grid', placeItems: 'center', color: 'white' }}>
-                        <Icon style={{ width: '20px', height: '20px' }} />
+                        <p className="m-0 text-sm font-bold text-white">{item.user}</p>
+                        <p className="mt-1.5 mb-0 text-[#94a3b8] text-xs">{item.action}</p>
                       </div>
                     </div>
+                    <span className="text-[#64748b] text-xs tracking-[0.18em] uppercase">{item.time}</span>
                   </div>
-                )
-              })}
-            </div>
-
-            <div style={{ display: 'grid', gap: '24px', gridTemplateColumns: '1.8fr 1fr', marginTop: '24px' }}>
-              <div style={{ borderRadius: '32px', background: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px rgba(0,0,0,0.16)', padding: '28px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
-                  <div>
-                    <p style={{ margin: 0, color: '#94a3b8', fontSize: '12px', letterSpacing: '0.24em', textTransform: 'uppercase' }}>Statistics</p>
-                    <h2 style={{ margin: '14px 0 0', fontSize: '28px', fontWeight: 700 }}>March 2026</h2>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8' }}>
-                    <span style={{ fontSize: '12px' }}>Updated</span>
-                    <TrendingUp style={{ width: '20px', height: '20px', color: '#4ade80' }} />
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '28px', minHeight: '320px', borderRadius: '28px', background: 'rgba(255,255,255,0.03)', padding: '24px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(255,255,255,0.05), transparent)', borderRadius: '28px', pointerEvents: 'none' }} />
-                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '12px', marginBottom: '20px' }}>
-                      <span>0k</span>
-                      <span>100k</span>
-                      <span>200k</span>
-                      <span>500k</span>
-                    </div>
-                    <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                      <div style={{ position: 'absolute', inset: 0, display: 'grid', gridTemplateRows: '1fr 1fr 1fr 1fr 1fr', rowGap: '0', opacity: 0.18 }}>
-                        {Array.from({ length: 5 }).map((_, index) => <div key={index} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)' }} />)}
-                      </div>
-                      <div style={{ height: 'calc(100% - 20px)', width: '100%', position: 'relative' }}>
-                        <svg viewBox="0 0 600 320" style={{ width: '100%', height: '100%' }}>
-                          <path d="M20 260 C120 180 200 160 280 200 S460 180 520 140" fill="none" stroke="#38bdf8" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />
-                          <path d="M20 260 C120 210 200 190 280 220 S460 200 520 170" fill="none" stroke="#22c55e" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" opacity="0.7" />
-                          <circle cx="50" cy="250" r="6" fill="#38bdf8" />
-                          <circle cx="180" cy="190" r="6" fill="#38bdf8" />
-                          <circle cx="310" cy="210" r="6" fill="#38bdf8" />
-                          <circle cx="430" cy="180" r="6" fill="#38bdf8" />
-                          <circle cx="520" cy="145" r="6" fill="#38bdf8" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
 
-              <div style={{ borderRadius: '32px', background: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px rgba(0,0,0,0.16)', padding: '28px', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-                  <div>
-                    <p style={{ margin: 0, color: '#94a3b8', fontSize: '12px', letterSpacing: '0.24em', textTransform: 'uppercase' }}>Recent Transactions</p>
-                    <h2 style={{ margin: '14px 0 0', fontSize: '24px', fontWeight: 700 }}>Latest activity</h2>
-                  </div>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: 'rgba(255,255,255,0.08)', display: 'grid', placeItems: 'center', color: '#38bdf8' }}>
-                    <FileText style={{ width: '20px', height: '20px' }} />
-                  </div>
-                </div>
-
-                <div style={{ marginTop: '24px', display: 'grid', gap: '16px' }}>
-                  {recentActivity.map((item) => (
-                    <div key={item.user} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', padding: '16px 18px', borderRadius: '22px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                        <div style={{ width: '44px', height: '44px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(56,189,248,0.18), rgba(34,197,94,0.18))', display: 'grid', placeItems: 'center', fontWeight: 700, color: '#38bdf8' }}>
-                          {item.initials}
-                        </div>
-                        <div>
-                          <p style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: 'white' }}>{item.user}</p>
-                          <p style={{ margin: '6px 0 0', color: '#94a3b8', fontSize: '13px' }}>{item.action}</p>
-                        </div>
-                      </div>
-                      <span style={{ color: '#64748b', fontSize: '12px', letterSpacing: '0.18em', textTransform: 'uppercase' }}>{item.time}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <a href="#" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 700, textDecoration: 'none' }}>
-                    View All Transactions
-                    <ArrowRight style={{ width: '16px', height: '16px' }} />
-                  </a>
-                </div>
+              <div className="mt-auto pt-6 border-t border-[rgba(255,255,255,0.08)]">
+                <a href="#" className="inline-flex items-center gap-2 text-[#38bdf8] font-bold no-underline hover:gap-3 transition-all">
+                  View All Transactions
+                  <ArrowRight className="w-4 h-4" />
+                </a>
               </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   )

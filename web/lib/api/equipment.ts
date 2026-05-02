@@ -10,21 +10,36 @@ export interface Equipment {
   id: number;
   name: string;
   category: Category;
-  model: string;
-  manufacturer: string;
-  specifications: string;
+  model?: string;
+  manufacturer?: string;
+  specifications?: string;
   conditionStatus: string;
-  purchaseDate: string;
-  serialNumber: string;
+  purchaseDate?: string;
+  serialNumber?: string;
   quantity: number;
   imageUrl: string;
   createdAt: string;
-  updatedAt: string;
-  createdBy?: {
+  updatedAt?: string;
+  createdBy: {
     id: number;
     name: string;
   };
 }
+
+export interface EquipmentDetail extends Equipment {
+  model?: string
+  manufacturer?: string
+  specifications?: string
+  purchaseDate?: string
+  serialNumber?: string
+  createdAt: string
+  createdBy: {
+    id: number
+    name: string
+  }
+  updatedAt?: string
+}
+
 
 export interface PaginatedResponse<T> {
   content: T[];
@@ -44,32 +59,43 @@ export const equipmentApi = {
     return apiRequest<PaginatedResponse<Equipment>>(url);
   },
 
-  getById: (id: number) => 
-    apiRequest<Equipment>(`/equipments/${id}`),
+  getById: async (id: number): Promise<EquipmentDetail> => {
+    const response = await apiRequest<EquipmentDetail>(`/equipments/${id}`)
+    return response
+  },
 
-  search: (query: string, page = 0, limit = 50) => 
-    apiRequest<PaginatedResponse<Equipment>>(`/equipments/search?q=${query}&page=${page}&limit=${limit}`),
-
-  create: (data: Partial<Equipment>) => 
-    apiRequest<Equipment>('/equipments', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-
-  update: (id: number, data: Partial<Equipment>) => 
-    apiRequest<Equipment>(`/equipments/${id}`, {
+  update: async (id: number, data: Partial<EquipmentFormData>): Promise<EquipmentDetail> => {
+    const response = await apiRequest<EquipmentDetail>(`/equipments/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(data),
-    }),
+      body: JSON.stringify(data)
+    })
+    return response
+  },
 
-  updateStatus: (id: number, status: string) => 
-    apiRequest<Equipment>(`/equipments/${id}/status`, {
+  updateStatus: async (id: number, status: string): Promise<EquipmentDetail> => {
+    const response = await apiRequest<EquipmentDetail>(`/equipments/${id}/status`, {
       method: 'PUT',
-      body: JSON.stringify({ status }),
-    }),
+      body: JSON.stringify({ status })
+    })
+    return response
+  },
 
-  archive: (id: number) => 
-    apiRequest<void>(`/equipments/${id}`, {
-      method: 'DELETE',
-    }),
+  archive: async (id: number): Promise<void> => {
+    await apiRequest(`/equipments/${id}`, {
+      method: 'DELETE'
+    })
+  }
 };
+
+export interface EquipmentFormData {
+  name: string
+  categoryId: number
+  model: string
+  manufacturer: string
+  specifications: string
+  conditionStatus: string
+  purchaseDate: string
+  serialNumber: string
+  quantity: number
+  imageUrl: string
+}

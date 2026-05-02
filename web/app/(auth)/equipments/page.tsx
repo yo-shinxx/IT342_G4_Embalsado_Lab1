@@ -140,6 +140,14 @@ export default function EquipmentPage() {
                 {filteredEquipment.map((item) => (
                 <div
                     key={item.id}
+                    onClick={() => router.push(`/equipments/${item.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        router.push(`/equipments/${item.id}`);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
                     className="group rounded-2xl bg-slate-800/90 border border-white/10 p-5 hover:border-sky-500/30 hover:shadow-lg transition-all cursor-pointer"
                 >
                     <div className="flex justify-between items-start mb-3">
@@ -156,10 +164,14 @@ export default function EquipmentPage() {
                         </div>
                         )}
                     </div>
-                    {isCoordinator && (
-                        <button className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-white/10 transition-all">
+                   {isCoordinator && (
+                      <button 
+                        onClick={(e) => e.stopPropagation()}
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-white/10 transition-all"
+                        aria-label="More options"
+                      >
                         <MoreVertical className="w-4 h-4 text-slate-500" />
-                        </button>
+                      </button>
                     )}
                     </div>
                     
@@ -190,6 +202,14 @@ export default function EquipmentPage() {
                 {filteredEquipment.map((item) => (
                     <div
                     key={item.id}
+                    onClick={() => router.push(`/equipments/${item.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        router.push(`/equipments/${item.id}`);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
                     className="grid grid-cols-12 gap-4 items-center px-4 py-3 rounded-xl bg-slate-800/90 border border-white/10 hover:border-sky-500/30 transition-all cursor-pointer group"
                     >
                     <div className="col-span-5 flex items-center gap-3">
@@ -205,9 +225,13 @@ export default function EquipmentPage() {
                         {item.conditionStatus}
                         </span>
                         {isCoordinator && (
-                        <button className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-white/10 transition-all">
-                            <MoreVertical className="w-4 h-4 text-slate-500" />
-                        </button>
+                        <button 
+                        onClick={(e) => e.stopPropagation()}
+                        className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-white/10 transition-all"
+                        aria-label="More options"
+                      >
+                        <MoreVertical className="w-4 h-4 text-slate-500" />
+                      </button>
                         )}
                     </div>
                     </div>

@@ -38,6 +38,7 @@ export default function LoginPage() {
       localStorage.setItem('userId', response.user.id.toString())
 
       toast.success('Login successful!')
+      window.dispatchEvent(new Event('authChange'))
       router.push('/home')
     } catch (error: any) {
       toast.error(error.message || 'Login failed')

@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
 export default function Navbar() {
     const router = useRouter()
     const pathname = usePathname()
-    const { isCoordinator, role } = useRole()
+    const { isCoordinator, role, refreshRole } = useRole()
     const [user, setUser] = useState<HeaderUser | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -59,6 +59,7 @@ export default function Navbar() {
                     avatar: userData.avatar,
                     role: userData.role || 'NAS'
                 })
+                await refreshRole()
             } catch (error) {
                 console.error('Failed to fetch user profile:', error)
                 toast.error('Failed to load user profile.')
@@ -67,7 +68,7 @@ export default function Navbar() {
             }
         }
         fetchUserProfile()
-    }, [router])
+    }, [router, refreshRole])
 
     const handleLogout = async () => {
         try {
@@ -78,6 +79,7 @@ export default function Navbar() {
             toast.error('Logout failed. Please try again.')
         } finally {
             setUser(null)
+            window.dispatchEvent(new Event('authChange'))
             router.replace("/")
         }
     }

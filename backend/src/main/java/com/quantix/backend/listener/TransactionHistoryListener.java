@@ -24,10 +24,11 @@ public class TransactionHistoryListener {
 
     @EventListener
     public void onEquipmentCreated(EquipmentCreatedEvent event) {
-        transactionLogger.log(
+        transactionLogger.logEquipmentAction(
                 "EQUIPMENT_CREATED",
                 event.getUserId(),
                 event.getEmail(),
+                event.getEquipmentName(),
                 "Equipment created: " + event.getEquipmentName() +
                         " (Status: " + event.getConditionStatus() + ")"
         );
@@ -35,10 +36,11 @@ public class TransactionHistoryListener {
 
     @EventListener
     public void onEquipmentUpdated(EquipmentUpdatedEvent event) {
-        transactionLogger.log(
+        transactionLogger.logEquipmentAction(
                 "EQUIPMENT_UPDATED",
                 event.getUserId(),
                 event.getEmail(),
+                event.getEquipmentName(),
                 "Equipment updated: " + event.getEquipmentName() +
                         " - Changes: " + event.getChanges()
         );
@@ -46,10 +48,11 @@ public class TransactionHistoryListener {
 
     @EventListener
     public void onEquipmentStatusChanged(EquipmentStatusChangedEvent event) {
-        transactionLogger.log(
+        transactionLogger.logEquipmentAction(
                 "EQUIPMENT_STATUS_CHANGED",
                 event.getUserId(),
                 event.getEmail(),
+                event.getEquipmentName(),
                 "Equipment status changed: " + event.getEquipmentName() +
                         " from " + event.getPreviousStatus() + " to " + event.getNewStatus()
         );
@@ -57,10 +60,11 @@ public class TransactionHistoryListener {
 
     @EventListener
     public void onEquipmentArchived(EquipmentArchivedEvent event) {
-        transactionLogger.log(
+        transactionLogger.logEquipmentAction(
                 "EQUIPMENT_ARCHIVED",
                 event.getUserId(),
                 event.getEmail(),
+                event.getEquipmentName(),
                 "Equipment archived: " + event.getEquipmentName()
         );
     }

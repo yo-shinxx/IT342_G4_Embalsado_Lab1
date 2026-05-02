@@ -19,6 +19,7 @@ public class TransactionLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_log_id")
     private Long transactionLogId;
 
     @Column(name = "action", nullable = false)

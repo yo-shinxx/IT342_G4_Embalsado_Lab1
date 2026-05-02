@@ -2,19 +2,48 @@
 
 import { ArrowRight, Bell, Box, FileText, LogOut, PackageSearch, PlusCircle, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { logoutUser } from '@/lib/api/auth'
+import { use, useEffect, useState } from 'react'
 import Background from '@/components/background'
 import Navbar from '@/components/navbar'
-import Logo from '@/components/logo'
-import { toast } from 'sonner'
 import Header from '@/components/header'
+import { toast } from 'sonner'
+import { TransactionLog, transactionApi } from '@/lib/api/transaction'
 
 type HeaderUser = {
   email: string
   firstName: string
   lastName: string
   avatar: string
+}
+
+const getActionTypeColor = (actionType: string) => {
+  switch (actionType?.toUpperCase()) {
+    case 'BORROW':
+      return 'bg-yellow-500/20 text-yellow-400'
+    case 'RETURN':
+      return 'bg-green-500/20 text-green-400'
+    case 'PURCHASE':
+      return 'bg-blue-500/20 text-blue-400'
+    case 'MAINTENANCE':
+      return 'bg-purple-500/20 text-purple-400'
+    default:
+      return 'bg-slate-500/20 text-slate-400'
+  }
+}
+
+const formatRelativeTime = (timestamp: string) => {
+  const date = new Date(timestamp)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 1) return 'Just now'
+  if (diffMins < 60) return `${diffMins} min ago`
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+  return date.toLocaleDateString()
 }
 
 // placeholders only for now 
@@ -45,16 +74,10 @@ const stats = [
   },
 ]
 
-const recentActivity = [
-  { user: 'Aileen', action: 'checked out a microscope', time: '2m ago', initials: 'A' },
-  { user: 'Marcus', action: 'returned a thermal cycler', time: '12m ago', initials: 'M' },
-  { user: 'Nina', action: 'requested new pipette tips', time: '24m ago', initials: 'N' },
-  { user: 'Sophia', action: 'approved a transfer request', time: '1h ago', initials: 'S' },
-]
-
 export default function Dashboard() {
   const router = useRouter()
   const [userEmail, setUserEmail] = useState('')
+  const [recentTransactions, setRecentTransactions] = useState<TransactionLog[]>([])
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
@@ -63,6 +86,18 @@ export default function Dashboard() {
     } else {
       setUserEmail(email)
     }
+  }, [router])
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const transactionsData = await transactionApi.getRecentActivity(0, 5)
+        setRecentTransactions(transactionsData.content)
+      } catch (error) {
+        toast.error('Failed to fetch dashboard data:')
+      }
+    }
+    fetchDashboardData()
   }, [router])
 
   return (
@@ -151,27 +186,35 @@ export default function Dashboard() {
               </div>
 
               <div className="mt-6 grid gap-4">
-                {recentActivity.map((item) => (
-                  <div key={item.user} className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)]">
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-[rgba(56,189,248,0.18)] to-[rgba(34,197,94,0.18)] grid place-items-center font-bold text-[#38bdf8]">
-                        {item.initials}
-                      </div>
-                      <div>
-                        <p className="m-0 text-sm font-bold text-white">{item.user}</p>
-                        <p className="mt-1.5 mb-0 text-[#94a3b8] text-xs">{item.action}</p>
-                      </div>
-                    </div>
-                    <span className="text-[#64748b] text-xs tracking-[0.18em] uppercase">{item.time}</span>
+                <div className="rounded-2xl bg-slate-800/90 border border-white/10 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold">Recent Activity</h2>
+                    <button
+                      onClick={() => router.push('/transactions')}
+                      className="text-sm text-sky-400 hover:text-sky-300 transition-all"
+                    >
+                      View All
+                    </button>
                   </div>
-                ))}
-              </div>
-
-              <div className="mt-auto pt-6 border-t border-[rgba(255,255,255,0.08)]">
-                <a href="#" className="inline-flex items-center gap-2 text-[#38bdf8] font-bold no-underline hover:gap-3 transition-all">
-                  View All Transactions
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                  
+                  <div className="space-y-3">
+                    {recentTransactions.slice(0, 5).map((transaction, index) => (
+                      <div
+                        key={transaction.id  || `transaction-${index}`}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition-all cursor-pointer"
+                        onClick={() => router.push('/transactions')}
+                      >
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${getActionTypeColor(transaction.action)}`}>
+                          {transaction.action.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{transaction.action}</p>
+                        </div>
+                        <span className="text-xs text-slate-500">{formatRelativeTime(transaction.timestamp)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

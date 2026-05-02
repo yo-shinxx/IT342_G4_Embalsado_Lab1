@@ -18,6 +18,8 @@ public interface TransactionLogRepository extends JpaRepository<TransactionLog, 
 
     Page<TransactionLog> findByUserId(Long userId, Pageable pageable);
 
+    Page<TransactionLog> findByAction(String action, Pageable pageable);
+
     List<TransactionLog> findByAction(String action);
 
     List<TransactionLog> findByTimestampBetween(LocalDateTime start, LocalDateTime end);

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+// @ts-ignore
 import './globals.css'
 import ToasterProvider from '@/components/toaster-provider'
+import RoleProvider from '@/components/role-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-          {children}
-          <ToasterProvider />
+          <RoleProvider>
+            {children}
+            <ToasterProvider />
+          </RoleProvider>
         </body>
     </html>
   )

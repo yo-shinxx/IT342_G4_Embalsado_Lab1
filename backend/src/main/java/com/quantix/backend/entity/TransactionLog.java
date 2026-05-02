@@ -19,18 +19,22 @@ public class TransactionLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "transaction_log_id")
+    private Long transactionLogId;
 
-    @Column(nullable = false)
+    @Column(name = "action", nullable = false)
     private String action;
 
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(length = 1000)
+    @Column(name = "equipment_name")
+    private String equipmentName;
+
+    @Column(name = "details", length = 1000)
     private String details;
 
     @CreationTimestamp

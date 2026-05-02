@@ -22,7 +22,7 @@ export default function FilterDropdown({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-4 pr-10 py-2 bg-slate-800/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-sky-500 appearance-none cursor-pointer min-w-[140px]"
+        className="pl-4 pr-10 py-2 bg-slate-800/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-sky-500 appearance-none cursor-pointer min-w-35"
       >
         {options.map(option => (
           <option key={option} value={option}>{option}</option>

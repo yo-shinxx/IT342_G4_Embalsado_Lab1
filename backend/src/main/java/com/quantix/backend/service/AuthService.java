@@ -80,12 +80,6 @@ public class AuthService {
             throw new RuntimeException("Account is inactive. Please contact administrator.");
         }
 
-        eventPublisher.publishEvent(new UserLoginEvent(
-                user.getUserId(),
-                user.getEmail(),
-                "PASSWORD"
-        ));
-
         String token = jwtTokenProvider.generateToken(user);
 
         return buildAuthResponse(token, user);
@@ -105,10 +99,6 @@ public class AuthService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email not found in Google account");
         }
-
-//        if (!isInstitutionalEmail(email)) {
-//            throw new IllegalArgumentException("Please use institutional email (@cit.edu)");
-//        }
 
         // Find or create user
         User user = userRepository.findByEmail(email)

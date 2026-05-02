@@ -66,15 +66,12 @@ export default function Dashboard() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
       <Background />
       
-      {/* Fixed Navbar */}
       <Navbar />
 
-      {/* This container is pushed right by the navbar width */}
       <div className="min-h-screen flex flex-col" style={{ marginLeft: '280px' }}>
-        {/* Header - now inside the pushed container */}
         <Header />
 
         {/* Main Content */}
@@ -112,8 +109,8 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="mt-7 min-h-[320px] rounded-3xl bg-[rgba(255,255,255,0.03)] p-6 relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0.05)] to-transparent rounded-3xl pointer-events-none" />
+              <div className="mt-7 min-h-80 rounded-3xl bg-[rgba(255,255,255,0.03)] p-6 relative">
+                <div className="absolute inset-0 bg-linear-to-b from-[rgba(255,255,255,0.05)] to-transparent rounded-3xl pointer-events-none" />
                 <div className="w-full h-full flex flex-col justify-between">
                   <div className="flex justify-between text-[#94a3b8] text-xs mb-5">
                     <span>0k</span>
@@ -157,7 +154,7 @@ export default function Dashboard() {
                 {recentActivity.map((item) => (
                   <div key={item.user} className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)]">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[rgba(56,189,248,0.18)] to-[rgba(34,197,94,0.18)] grid place-items-center font-bold text-[#38bdf8]">
+                      <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-[rgba(56,189,248,0.18)] to-[rgba(34,197,94,0.18)] grid place-items-center font-bold text-[#38bdf8]">
                         {item.initials}
                       </div>
                       <div>

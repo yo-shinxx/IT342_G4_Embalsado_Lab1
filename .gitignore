@@ -58,33 +58,8 @@ web/.vercel
 backend/target/
 *.class
 
-# Gradle / build 
-.gradle/
-build/
-local.properties
-
-# Kotlin
-.kotlin/
-
-# Android Studio & IntelliJ
-*.iml
-.idea/
-captures/
-.externalNativeBuild/
-.cxx/
-.navigation/
-
-# Build Outputs
-*.apk
-*.aab
-*.ap_
-*.dex
-
-# OS-Generated Files
-.DS_Store        # macOS
-Thumbs.db        # Windows
-
-# Keystores & Secrets (CRITICAL for security)
-*.jks
-*.keystore
-keystore.properties
+# Mobile
+mobile/app/build/
+mobile/app/build/**
+*.class
+*.log

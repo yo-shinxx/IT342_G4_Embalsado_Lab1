@@ -26,9 +26,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { name: 'Dashboard', path: '/home', icon: PackageSearch },
   { name: 'Equipments', path: '/equipments', icon: Box },
-  { name: 'Inventory', path: '/inventory', icon: CalendarDays },
   { name: 'Transactions', path: '/transactions', icon: FileText },
-  { name: 'Settings', path: '/settings', icon: Users },
 ]
 
 export default function Navbar() {
@@ -96,9 +94,6 @@ export default function Navbar() {
         <aside className="fixed left-0 top-0 z-40 h-screen bg-[rgba(8,15,41,0.96)] border-r border-[rgba(255,255,255,0.08)] p-8 overflow-y-auto" style={{ width: '280px' }}>
             <nav className="flex flex-col gap-2.5">
                 <div className="mb-4">
-                    <div className="mb-2.5">
-                        <Logo compact={true} />
-                    </div>
                     <div 
                         onClick={handleProfileClick}
                         className="grid place-items-center text-center p-2.5 cursor-pointer rounded-2xl transition-all duration-200 hover:bg-[rgba(255,255,255,0.05)]"

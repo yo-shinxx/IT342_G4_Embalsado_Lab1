@@ -1,28 +1,16 @@
 "use client"
 
-import { useState } from 'react'
-import { X, Upload } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { X, Upload, ImageIcon } from 'lucide-react'
 import { apiRequest } from '@/lib/api'
 import { toast } from 'sonner'
+import { equipmentApi, EquipmentFormData } from '@/lib/api/equipment'
 
 interface AddEquipmentModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
   categories: { id: number; name: string }[]
-}
-
-interface EquipmentFormData {
-  name: string
-  categoryId: number
-  model: string
-  manufacturer: string
-  specifications: string
-  conditionStatus: string
-  purchaseDate: string
-  serialNumber: string
-  quantity: number
-  imageUrl: string
 }
 
 export default function AddEquipmentModal({ 
@@ -32,6 +20,10 @@ export default function AddEquipmentModal({
   categories 
 }: AddEquipmentModalProps) {
   const [loading, setLoading] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  
   const [formData, setFormData] = useState<EquipmentFormData>({
     name: '',
     categoryId: categories[0]?.id || 0,
@@ -54,14 +46,28 @@ export default function AddEquipmentModal({
     'FOR_DISPOSAL'
   ]
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const response = await apiRequest('/equipments', {
-        method: 'POST',
-        body: JSON.stringify(formData)
+      let imageUrl = ''
+      
+      if (imageFile) {
+        imageUrl = await equipmentApi.uploadImage(imageFile)
+      }
+      
+      await equipmentApi.create({
+        ...formData,
+        imageUrl: imageUrl
       })
 
       toast.success('Equipment added successfully!')
@@ -89,6 +95,11 @@ export default function AddEquipmentModal({
       quantity: 1,
       imageUrl: ''
     })
+    setImageFile(null)
+    setImagePreview('')
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   if (!isOpen) return null
@@ -113,6 +124,47 @@ export default function AddEquipmentModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Image Upload Section */}
+          <div>
+            <h3 className="text-sm font-semibold text-sky-400 mb-3">Media</h3>
+            <div className="flex items-center gap-4">
+              <div 
+                className="w-32 h-32 rounded-xl bg-slate-800/80 border border-white/10 overflow-hidden cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-500">
+                    <ImageIcon className="w-8 h-8 mb-1" />
+                    <span className="text-xs">Click to upload</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/80 text-white hover:bg-slate-700 transition-all border border-white/10"
+                >
+                  <Upload className="w-4 h-4" />
+                  Choose Image
+                </button>
+                <p className="text-xs text-slate-400 mt-2">
+                  JPG, PNG, GIF (Max 5MB)
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Basic Information Section */}
           <div>
             <h3 className="text-sm font-semibold text-sky-400 mb-3">Basic Information</h3>
@@ -241,16 +293,6 @@ export default function AddEquipmentModal({
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
                 />
               </div>
-            </div>
-          </div>
-
-          {/* img url for now, will implement upload img later */}
-          <div>
-            <h3 className="text-sm font-semibold text-sky-400 mb-3">Media</h3>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">
-                Image
-              </label>
             </div>
           </div>
 

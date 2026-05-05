@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { ImageIcon, Upload, X } from 'lucide-react'
 import { equipmentApi, EquipmentDetail, EquipmentFormData } from '@/lib/api/equipment'
 import { apiRequest } from '@/lib/api'
 import { Category } from '@/lib/api/equipment'
@@ -22,6 +22,9 @@ export default function EditEquipmentModal({
 }: EditEquipmentModalProps) {
   const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>(equipment.imageUrl || '')
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState<EquipmentFormData>({
     name: equipment.name,
     categoryId: equipment.category.id,
@@ -73,12 +76,30 @@ export default function EditEquipmentModal({
     }
   }, [isOpen, equipment])
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      await equipmentApi.update(equipment.id, formData)
+      let imageUrl = formData.imageUrl || ''
+      
+      if (imageFile) {
+        imageUrl = await equipmentApi.uploadImage(imageFile)
+      }
+      
+      await equipmentApi.update(equipment.id, {
+        ...formData,
+        imageUrl: imageUrl
+      })
+      
       toast.success('Equipment updated successfully!')
       onSuccess()
       onClose()
@@ -92,7 +113,7 @@ export default function EditEquipmentModal({
 
   if (!isOpen) return null
 
-  return (
+ return (
     <>
       <div 
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
@@ -112,6 +133,52 @@ export default function EditEquipmentModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Media Section  */}
+          <div>
+            <h3 className="text-sm font-semibold text-sky-400 mb-3">Media</h3>
+            <div className="flex items-center gap-4">
+              <div 
+                className="w-32 h-32 rounded-xl bg-slate-800/80 border border-white/10 overflow-hidden cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-500">
+                    <ImageIcon className="w-8 h-8 mb-1" />
+                    <span className="text-xs">Click to upload</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/80 text-white hover:bg-slate-700 transition-all border border-white/10"
+                >
+                  <Upload className="w-4 h-4" />
+                  {equipment.imageUrl ? 'Change Image' : 'Upload Image'}
+                </button>
+                <p className="text-xs text-slate-400 mt-2">
+                  JPG, PNG, GIF (Max 5MB)
+                </p>
+                {equipment.imageUrl && !imageFile && (
+                  <p className="text-xs text-slate-500 mt-1">
+                    Current image will be kept
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Basic Information */}
           <div>
             <h3 className="text-sm font-semibold text-sky-400 mb-3">Basic Information</h3>
@@ -126,7 +193,6 @@ export default function EditEquipmentModal({
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500 transition-all"
-                  placeholder="e.g., Digital Oscilloscope"
                 />
               </div>
               
@@ -154,8 +220,7 @@ export default function EditEquipmentModal({
                   type="text"
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="e.g., DSO-X 2000"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
 
@@ -167,8 +232,7 @@ export default function EditEquipmentModal({
                   type="text"
                   value={formData.manufacturer}
                   onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="e.g., Keysight, Tektronix"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
             </div>
@@ -186,8 +250,7 @@ export default function EditEquipmentModal({
                   rows={3}
                   value={formData.specifications}
                   onChange={(e) => setFormData({ ...formData, specifications: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="Technical specifications, features, etc."
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
 
@@ -199,7 +262,7 @@ export default function EditEquipmentModal({
                   required
                   value={formData.conditionStatus}
                   onChange={(e) => setFormData({ ...formData, conditionStatus: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 >
                   {statusOptions.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -215,7 +278,7 @@ export default function EditEquipmentModal({
                   type="date"
                   value={formData.purchaseDate}
                   onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
 
@@ -227,8 +290,7 @@ export default function EditEquipmentModal({
                   type="text"
                   value={formData.serialNumber}
                   onChange={(e) => setFormData({ ...formData, serialNumber: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                  placeholder="SN-123456"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
 
@@ -242,26 +304,9 @@ export default function EditEquipmentModal({
                   required
                   value={formData.quantity}
                   onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })}
-                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white"
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Media Section */}
-          <div>
-            <h3 className="text-sm font-semibold text-sky-400 mb-3">Media</h3>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">
-                Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-800/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-sky-500"
-                placeholder="https://example.com/image.jpg"
-              />
             </div>
           </div>
 

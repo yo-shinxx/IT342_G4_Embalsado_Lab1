@@ -77,6 +77,11 @@ export const equipmentApi = {
     return response
   },
 
+  getByName: async (name: string): Promise<Equipment | null> => {
+    const response = await apiRequest<PaginatedResponse<Equipment>>(`/equipments?search=${encodeURIComponent(name)}&limit=1`)
+    return response.content[0] || null
+  },
+
   create: async (data: EquipmentFormData): Promise<EquipmentDetail> => {
     const response = await apiRequest<EquipmentDetail>(`/equipments`, {
       method: 'POST',

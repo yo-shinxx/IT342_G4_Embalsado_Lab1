@@ -112,6 +112,10 @@ export const equipmentApi = {
     })
   },
 
+  search: (query: string, page = 0, limit = 50) => {
+  return apiRequest<PaginatedResponse<Equipment>>(`/equipments/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+},
+
   uploadImage: async (file: File): Promise<string> => {
     const formData = new FormData()
     formData.append('file', file)

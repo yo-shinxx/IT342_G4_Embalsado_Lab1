@@ -4,46 +4,57 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
   History, 
-  Filter, 
   User,
   Clock,
   FileText,
-  ChevronDown,
 } from 'lucide-react'
 import Background from '@/components/background'
 import Navbar from '@/components/navbar'
 import Header from '@/components/header'
+import SearchBar from '@/components/ui/search-bar'
+import FilterDropdown from '@/components/ui/filter-dropdown'
 import { transactionApi, TransactionLog } from '@/lib/api/transaction'
 import { toast } from 'sonner'
 
 export default function TransactionsPage() {
   const router = useRouter()
   const [transactions, setTransactions] = useState<TransactionLog[]>([])
+  const [allTransactions, setAllTransactions] = useState<TransactionLog[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedAction, setSelectedAction] = useState<string>('All')
+  const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [totalItems, setTotalItems] = useState(0)
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  const actionTypes = ['All', 'REGISTER', 'EQUIPMENT CREATED', 'EQUIPMENT UPDATED', 'EQUIPMENT STATUS CHANGED', 'EQUIPMENT ARCHIVED']
+  const actionTypes = [
+    'All',
+    'REGISTER',
+    'EQUIPMENT_CREATED',
+    'EQUIPMENT_UPDATED',
+    'EQUIPMENT_STATUS_CHANGED',
+    'EQUIPMENT_ARCHIVED'
+  ]
 
   const getDisplayAction = (action: string) => {
-    if (action === 'All') return 'All Actions'
-    if (action === 'REGISTER') return 'Register'
-    if (action === 'EQUIPMENT_CREATED') return 'Equipment Created'
-    if (action === 'EQUIPMENT_UPDATED') return 'Equipment Updated'
-    if (action === 'EQUIPMENT_STATUS_CHANGED') return 'Status Changed'
-    if (action === 'EQUIPMENT_ARCHIVED') return 'Equipment Archived'
-    return action
+    const displayMap: Record<string, string> = {
+      'All': 'All Actions',
+      'REGISTER': 'Register',
+      'EQUIPMENT_CREATED': 'Equipment Created',
+      'EQUIPMENT_UPDATED': 'Equipment Updated',
+      'EQUIPMENT_STATUS_CHANGED': 'Status Changed',
+      'EQUIPMENT_ARCHIVED': 'Equipment Archived'
+    }
+    return displayMap[action] || action
   }
 
   const fetchTransactions = async (page: number = 0) => {
     try {
       setLoading(true)
-      const data = await transactionApi.getAllLogs(page, 50, { 
+      const data = await transactionApi.getAllLogs(page, 12, { 
         action: selectedAction !== 'All' ? selectedAction : undefined 
       })
+      setAllTransactions(data.content)
       setTransactions(data.content)
       setCurrentPage(data.pagination.page)
       setTotalPages(data.pagination.pages)
@@ -64,6 +75,19 @@ export default function TransactionsPage() {
       fetchTransactions(0)
     }
   }, [router, selectedAction])
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const filtered = allTransactions.filter(transaction => 
+        transaction.equipmentName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        transaction.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        transaction.details?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      setTransactions(filtered)
+    } else {
+      setTransactions(allTransactions)
+    }
+  }, [searchQuery, allTransactions])
 
   const getActionColor = (action: string) => {
     switch (action) {
@@ -138,45 +162,35 @@ export default function TransactionsPage() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold">Transaction History</h1>
-              <p className="text-slate-400 text-sm mt-1">Complete audit trail of all equipment activities</p>
+              <p className="text-slate-400 text-sm mt-1">
+                {totalItems} total transaction{totalItems !== 1 ? 's' : ''}
+              </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <History className="w-4 h-4" />
-              {totalItems} total transactions
+              Complete audit trail
             </div>
           </div>
 
-          {/* Filter Bar - matching Equipment page style */}
-          <div className="mb-6">
-            <div className="relative inline-block">
-              <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10 transition-all"
-              >
-                <Filter className="w-4 h-4" />
-                <span>Filter: {selectedAction === 'All' ? 'All Actions' : getDisplayAction(selectedAction)}</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {isFilterOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 rounded-lg bg-slate-800 border border-white/10 shadow-lg z-10 overflow-hidden">
-                  {actionTypes.map((action) => (
-                    <button
-                      key={action}
-                      onClick={() => {
-                        setSelectedAction(action)
-                        setIsFilterOpen(false)
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm transition-all hover:bg-slate-700 ${
-                        selectedAction === action ? 'bg-sky-500/20 text-sky-400' : 'text-slate-400'
-                      }`}
-                    >
-                      {action === 'All' ? 'All Actions' : getDisplayAction(action)}
-                    </button>
-                  ))}
-                </div>
-              )}
+          {/* Search and Filter Bar */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="w-80">
+              <SearchBar 
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search transactions..."
+              />
             </div>
+            
+            <FilterDropdown
+              options={actionTypes.map(getDisplayAction)}
+              value={getDisplayAction(selectedAction)}
+              onChange={(displayValue) => {
+                const action = actionTypes.find(a => getDisplayAction(a) === displayValue) || 'All'
+                setSelectedAction(action)
+              }}
+              label="Action"
+            />
           </div>
 
           {/* Loading State */}
@@ -195,8 +209,10 @@ export default function TransactionsPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">No transactions found</h3>
               <p className="text-slate-400">
-                {selectedAction !== 'All'
-                  ? `No ${selectedAction.replace('_', ' ')} transactions to display`
+                {searchQuery
+                  ? `No results for "${searchQuery}"`
+                  : selectedAction !== 'All'
+                  ? `No ${getDisplayAction(selectedAction).toLowerCase()} transactions`
                   : 'No transaction history available'}
               </p>
             </div>
@@ -220,7 +236,7 @@ export default function TransactionsPage() {
                 >
                   <div className="col-span-4 flex items-center gap-3">
                     <span className={`text-xs px-2 py-1 rounded-full border ${getActionColor(transaction.action)}`}>
-                      {transaction.action.replace('_', ' ')}
+                      {getDisplayAction(transaction.action)}
                     </span>
                   </div>
                   <div className="col-span-4">
@@ -248,7 +264,7 @@ export default function TransactionsPage() {
           )}
 
           {/* Pagination */}
-          {!loading && transactions.length > 0 && (
+          {!loading && transactions.length > 0 && !searchQuery && (
             <div className="mt-8 flex items-center justify-between">
               <div className="text-sm text-slate-400">
                 Showing page {currentPage + 1} of {totalPages} ({totalItems} total)
@@ -269,6 +285,12 @@ export default function TransactionsPage() {
                   Next
                 </button>
               </div>
+            </div>
+          )}
+
+          {!loading && searchQuery && transactions.length > 0 && (
+            <div className="mt-6 text-center text-sm text-slate-500">
+              Showing {transactions.length} result{transactions.length !== 1 ? 's' : ''} for "{searchQuery}"
             </div>
           )}
         </main>

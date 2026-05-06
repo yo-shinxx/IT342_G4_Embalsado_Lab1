@@ -1,26 +1,34 @@
-// components/ui/view-toggle.tsx
-"use client"
+'use client'
 
-import { Grid3x3, List } from 'lucide-react'
+import { Grid, List } from 'lucide-react'
 
 interface ViewToggleProps {
   viewMode: 'grid' | 'list'
-  onToggle: (mode: 'grid' | 'list') => void
-  className?: string
+  onViewModeChange: (mode: 'grid' | 'list') => void
 }
 
-export default function ViewToggle({ viewMode, onToggle, className = "" }: ViewToggleProps) {
+export default function ViewToggle({ viewMode, onViewModeChange }: ViewToggleProps) {
   return (
-    <div className={`flex bg-slate-800/80 border border-white/10 rounded-xl overflow-hidden ${className}`}>
+    <div className="flex gap-1 p-1 rounded-lg bg-slate-800/80 border border-white/10">
       <button
-        onClick={() => onToggle('grid')}
-        className={`p-2 transition-all ${viewMode === 'grid' ? 'bg-sky-500 text-white' : 'text-slate-500 hover:text-white'}`}
+        onClick={() => onViewModeChange('grid')}
+        className={`p-2 rounded-md transition-all ${
+          viewMode === 'grid'
+            ? 'bg-sky-500 text-white'
+            : 'text-slate-400 hover:text-white hover:bg-slate-700'
+        }`}
+        aria-label="Grid view"
       >
-        <Grid3x3 className="w-4 h-4" />
+        <Grid className="w-4 h-4" />
       </button>
       <button
-        onClick={() => onToggle('list')}
-        className={`p-2 transition-all ${viewMode === 'list' ? 'bg-sky-500 text-white' : 'text-slate-500 hover:text-white'}`}
+        onClick={() => onViewModeChange('list')}
+        className={`p-2 rounded-md transition-all ${
+          viewMode === 'list'
+            ? 'bg-sky-500 text-white'
+            : 'text-slate-400 hover:text-white hover:bg-slate-700'
+        }`}
+        aria-label="List view"
       >
         <List className="w-4 h-4" />
       </button>

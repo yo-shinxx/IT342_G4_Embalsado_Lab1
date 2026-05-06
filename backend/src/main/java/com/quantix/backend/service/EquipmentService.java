@@ -106,9 +106,9 @@ public class EquipmentService {
         equipment.setPurchaseDate(request.getPurchaseDate());
         equipment.setSerialNumber(request.getSerialNumber());
         equipment.setQuantity(request.getQuantity() != null ? request.getQuantity() : 1);
-        equipment.setImageUrl(request.getImageUrl());
         equipment.setCreatedBy(user);
         equipment.setIsArchived(false);
+        equipment.setImageUrl(request.getImageUrl());
 
         equipment = equipmentRepository.save(equipment);
 
@@ -162,7 +162,15 @@ public class EquipmentService {
         equipment.setPurchaseDate(request.getPurchaseDate());
         equipment.setSerialNumber(request.getSerialNumber());
         equipment.setQuantity(request.getQuantity());
-        equipment.setImageUrl(request.getImageUrl());
+
+        String oldImageUrl = equipment.getImageUrl();
+        String newImageUrl = request.getImageUrl() != null ? request.getImageUrl() : oldImageUrl;
+        equipment.setImageUrl(newImageUrl);
+
+// for tracking
+        if (!oldImageUrl.equals(newImageUrl)) {
+            changes.put("image", Map.of("old", oldImageUrl, "new", newImageUrl));
+        }
 
         equipment = equipmentRepository.save(equipment);
 

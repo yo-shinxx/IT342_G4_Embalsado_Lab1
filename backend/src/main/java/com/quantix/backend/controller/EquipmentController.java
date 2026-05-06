@@ -27,9 +27,6 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
     private final UserRepository userRepository;
 
-    private static final String DEFAULT_IMAGE_URL =
-            "https://i.pinimg.com/1200x/ee/ca/b9/eecab93ad7e597dbcad7403c0a880038.jpg";
-
     @GetMapping
     public ResponseEntity<ApiResponse<PaginatedResponse<EquipmentDTO>>> getAllEquipment(
             @RequestParam(defaultValue = "0") int page,
@@ -121,10 +118,6 @@ public class EquipmentController {
             log.info("POST /api/equipment - Creating equipment: {}", request.getName());
 
             // Set default image if none provided
-            if (request.getImageUrl() == null || request.getImageUrl().trim().isEmpty()) {
-                request.setImageUrl(DEFAULT_IMAGE_URL);
-                log.info("Using default image URL");
-            }
 
             String userEmail = authentication.getName();
 

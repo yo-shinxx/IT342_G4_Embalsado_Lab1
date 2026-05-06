@@ -1,33 +1,23 @@
 'use client'
 
-import { ArrowRight, Bell, Box, FileText, LogOut, PackageSearch, PlusCircle, TrendingDown, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, FileText, PackageSearch, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Background from '@/components/background'
 import Navbar from '@/components/navbar'
 import Header from '@/components/header'
 import { toast } from 'sonner'
 import { TransactionLog, transactionApi } from '@/lib/api/transaction'
+import { equipmentApi, Equipment } from '@/lib/api/equipment'
 
-type HeaderUser = {
-  email: string
-  firstName: string
-  lastName: string
-  avatar: string
-}
-
-const getActionTypeColor = (actionType: string) => {
-  switch (actionType?.toUpperCase()) {
-    case 'BORROW':
-      return 'bg-yellow-500/20 text-yellow-400'
-    case 'RETURN':
-      return 'bg-green-500/20 text-green-400'
-    case 'PURCHASE':
-      return 'bg-blue-500/20 text-blue-400'
-    case 'MAINTENANCE':
-      return 'bg-purple-500/20 text-purple-400'
-    default:
-      return 'bg-slate-500/20 text-slate-400'
+const getActionDisplay = (action: string) => {
+  switch (action) {
+    case 'REGISTER': return 'User Registration'
+    case 'EQUIPMENT_CREATED': return 'Equipment Added'
+    case 'EQUIPMENT_UPDATED': return 'Equipment Updated'
+    case 'EQUIPMENT_STATUS_CHANGED': return 'Status Changed'
+    case 'EQUIPMENT_ARCHIVED': return 'Equipment Archived'
+    default: return action?.replace('_', ' ') || action
   }
 }
 
@@ -46,73 +36,119 @@ const formatRelativeTime = (timestamp: string) => {
   return date.toLocaleDateString()
 }
 
-// placeholders only for now 
-const stats = [
-  {
-    label: 'Total Equipment',
-    value: '267',
-    icon: PackageSearch,
-    accent: 'linear-gradient(135deg, #0ea5e9, #3b82f6)',
-  },
-  {
-    label: 'Active Transactions',
-    value: '190',
-    icon: TrendingUp,
-    accent: 'linear-gradient(135deg, #22c55e, #14b8a6)',
-  },
-  {
-    label: 'Pending Requests',
-    value: '101',
-    icon: TrendingDown,
-    accent: 'linear-gradient(135deg, #f59e0b, #facc15)',
-  },
-  {
-    label: 'Low Stock Alerts',
-    value: '7',
-    icon: Users,
-    accent: 'linear-gradient(135deg, #fb7185, #f43f5e)',
-  },
-]
-
 export default function Dashboard() {
   const router = useRouter()
-  const [userEmail, setUserEmail] = useState('')
   const [recentTransactions, setRecentTransactions] = useState<TransactionLog[]>([])
+  const [equipmentMap, setEquipmentMap] = useState<Map<string, Equipment>>(new Map())
+  const [stats, setStats] = useState({
+    totalEquipment: 0,
+    totalTransactions: 0,
+    lowStockAlerts: 0
+  })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
     if (!email) {
       router.push('/login')
-    } else {
-      setUserEmail(email)
     }
   }, [router])
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setLoading(true)
       try {
+        // All equipment
+        const equipmentData = await equipmentApi.getAll(0, 1000)
+        const allEquipment = equipmentData.content
+        
+        const totalEquipment = allEquipment.length
+        
+        // Quantity <= 5 for now
+        const lowStockAlerts = allEquipment.filter(e => e.quantity <= 5).length
+        
+        // Recent transactions
         const transactionsData = await transactionApi.getRecentActivity(0, 5)
         setRecentTransactions(transactionsData.content)
+        
+        // Total transactions
+        const allTransactions = await transactionApi.getAllLogs(0, 1000)
+        const totalTransactions = allTransactions.content.length
+        
+        setStats({
+          totalEquipment,
+          totalTransactions,
+          lowStockAlerts
+        })
+        
+        // Equipment object from allEquipment
+        const equipmentMapData = new Map<string, Equipment>()
+        allEquipment.forEach(eq => {
+          equipmentMapData.set(eq.name, eq)
+        })
+        setEquipmentMap(equipmentMapData)
+        
       } catch (error) {
-        toast.error('Failed to fetch dashboard data:')
+        console.error('Failed to fetch dashboard data:', error)
+        toast.error('Failed to fetch dashboard data')
+      } finally {
+        setLoading(false)
       }
     }
     fetchDashboardData()
-  }, [router])
+  }, [])
+
+  const statsCards = [
+    {
+      label: 'Total Equipments',
+      value: stats.totalEquipment.toString(),
+      icon: PackageSearch,
+      accent: 'linear-gradient(135deg, #0ea5e9, #3b82f6)',
+    },
+    {
+      label: 'Total Transactions',
+      value: stats.totalTransactions.toString(),
+      icon: TrendingUp,
+      accent: 'linear-gradient(135deg, #22c55e, #14b8a6)',
+    },
+    {
+      label: 'Low Stock Alerts',
+      value: stats.lowStockAlerts.toString(),
+      icon: Users,
+      accent: 'linear-gradient(135deg, #fb7185, #f43f5e)',
+    },
+  ]
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
+        <Background />
+        <Navbar />
+        <div className="min-h-screen flex flex-col" style={{ marginLeft: '280px' }}>
+          <Header />
+          <main className="flex-1 p-8 pt-6 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-slate-400">Loading dashboard...</p>
+            </div>
+          </main>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#020617] via-[#0f172a] to-[#020617] text-white">
       <Background />
-      
       <Navbar />
 
       <div className="min-h-screen flex flex-col" style={{ marginLeft: '280px' }}>
         <Header />
 
-        {/* Main Content */}
         <main className="flex-1 p-8 pt-6 overflow-y-auto">
-          <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
-            {stats.map((item) => {
+          {/* Stats Grid */}
+          <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(220px,1fr))] mb-6">
+            {statsCards.map((item) => {
               const Icon = item.icon
               return (
                 <div key={item.label} className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] p-5 shadow-[0_30px_60px_rgba(0,0,0,0.18)]">
@@ -130,50 +166,21 @@ export default function Dashboard() {
             })}
           </div>
 
-          <div className="grid gap-6 grid-cols-[1.8fr_1fr] mt-6">
-            {/* Chart Section */}
+          <div className="grid gap-6 grid-cols-[1.8fr_1fr]">
+            {/* Chart Section - Placeholder */}
             <div className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] shadow-[0_30px_60px_rgba(0,0,0,0.16)] p-7">
               <div className="flex justify-between items-start gap-4">
                 <div>
                   <p className="m-0 text-[#94a3b8] text-xs tracking-[0.24em] uppercase">Statistics</p>
-                  <h2 className="mt-3.5 mb-0 text-3xl font-bold">March 2026</h2>
-                </div>
-                <div className="flex items-center gap-2 text-[#94a3b8]">
-                  <span className="text-xs">Updated</span>
-                  <TrendingUp className="w-5 h-5 text-[#4ade80]" />
+                  <h2 className="mt-3.5 mb-0 text-3xl font-bold">Equipment Overview</h2>
                 </div>
               </div>
-
-              <div className="mt-7 min-h-80 rounded-3xl bg-[rgba(255,255,255,0.03)] p-6 relative">
-                <div className="absolute inset-0 bg-linear-to-b from-[rgba(255,255,255,0.05)] to-transparent rounded-3xl pointer-events-none" />
-                <div className="w-full h-full flex flex-col justify-between">
-                  <div className="flex justify-between text-[#94a3b8] text-xs mb-5">
-                    <span>0k</span>
-                    <span>100k</span>
-                    <span>200k</span>
-                    <span>500k</span>
-                  </div>
-                  <div className="relative flex-1 flex items-end justify-between">
-                    <div className="absolute inset-0 grid grid-rows-5 gap-0 opacity-18">
-                      {Array.from({ length: 5 }).map((_, index) => <div key={index} className="border-t border-dashed border-[rgba(255,255,255,0.1)]" />)}
-                    </div>
-                    <div className="h-[calc(100%-20px)] w-full relative">
-                      <svg viewBox="0 0 600 320" className="w-full h-full">
-                        <path d="M20 260 C120 180 200 160 280 200 S460 180 520 140" fill="none" stroke="#38bdf8" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />
-                        <path d="M20 260 C120 210 200 190 280 220 S460 200 520 170" fill="none" stroke="#22c55e" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" opacity="0.7" />
-                        <circle cx="50" cy="250" r="6" fill="#38bdf8" />
-                        <circle cx="180" cy="190" r="6" fill="#38bdf8" />
-                        <circle cx="310" cy="210" r="6" fill="#38bdf8" />
-                        <circle cx="430" cy="180" r="6" fill="#38bdf8" />
-                        <circle cx="520" cy="145" r="6" fill="#38bdf8" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+              <div className="mt-7 min-h-80 rounded-3xl bg-[rgba(255,255,255,0.03)] p-6 flex items-center justify-center">
+                <p className="text-slate-400">Chart coming soon</p>
               </div>
             </div>
 
-            {/* Activity Section */}
+            {/* Recent Activity */}
             <div className="rounded-3xl bg-[rgba(15,23,42,0.9)] border border-[rgba(255,255,255,0.08)] shadow-[0_30px_60px_rgba(0,0,0,0.16)] p-7 flex flex-col">
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -185,7 +192,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-4">
+              <div className="mt-6">
                 <div className="rounded-2xl bg-slate-800/90 border border-white/10 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold">Recent Activity</h2>
@@ -198,23 +205,61 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="space-y-3">
-                    {recentTransactions.slice(0, 5).map((transaction, index) => (
-                      <div
-                        key={transaction.id  || `transaction-${index}`}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition-all cursor-pointer"
-                        onClick={() => router.push('/transactions')}
-                      >
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${getActionTypeColor(transaction.action)}`}>
-                          {transaction.action.charAt(0)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{transaction.action}</p>
-                        </div>
-                        <span className="text-xs text-slate-500">{formatRelativeTime(transaction.timestamp)}</span>
+                    {recentTransactions.length === 0 ? (
+                      <div className="text-center py-8 text-slate-400">
+                        <p className="text-sm">No recent activity</p>
                       </div>
-                    ))}
+                    ) : (
+                      recentTransactions.map((transaction, index) => {
+                        const equipment = equipmentMap.get(transaction.equipmentName)
+                        return (
+                          <div
+                            key={transaction.id || index}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition-all cursor-pointer"
+                            onClick={() => router.push('/transactions')}
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                              {equipment?.imageUrl ? (
+                                <img 
+                                  src={equipment.imageUrl} 
+                                  alt={transaction.equipmentName}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-sm font-bold text-sky-400">
+                                  {transaction.equipmentName?.charAt(0) || transaction.action?.charAt(0) || '?'}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">
+                                {getActionDisplay(transaction.action)}
+                              </p>
+                              {transaction.equipmentName && (
+                                <p className="text-xs text-slate-400 truncate">
+                                  {transaction.equipmentName}
+                                </p>
+                              )}
+                            </div>
+                            <span className="text-xs text-slate-500 shrink-0">
+                              {formatRelativeTime(transaction.timestamp)}
+                            </span>
+                          </div>
+                        )
+                      })
+                    )}
                   </div>
                 </div>
+              </div>
+
+              <div className="mt-auto pt-6 border-t border-[rgba(255,255,255,0.08)]">
+                <button 
+                  onClick={() => router.push('/transactions')}
+                  className="inline-flex items-center gap-2 text-[#38bdf8] font-bold hover:gap-3 transition-all"
+                >
+                  View All Transactions
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>

@@ -26,6 +26,19 @@ export interface Equipment {
   };
 }
 
+export interface EquipmentFormData {
+  name: string
+  categoryId: number
+  model: string
+  manufacturer: string
+  specifications: string
+  conditionStatus: string
+  purchaseDate: string
+  serialNumber: string
+  quantity: number
+  imageUrl: string
+}
+
 export interface EquipmentDetail extends Equipment {
   model?: string
   manufacturer?: string
@@ -64,6 +77,19 @@ export const equipmentApi = {
     return response
   },
 
+  getByName: async (name: string): Promise<Equipment | null> => {
+    const response = await apiRequest<PaginatedResponse<Equipment>>(`/equipments?search=${encodeURIComponent(name)}&limit=1`)
+    return response.content[0] || null
+  },
+
+  create: async (data: EquipmentFormData): Promise<EquipmentDetail> => {
+    const response = await apiRequest<EquipmentDetail>(`/equipments`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    return response
+  },
+
   update: async (id: number, data: Partial<EquipmentFormData>): Promise<EquipmentDetail> => {
     const response = await apiRequest<EquipmentDetail>(`/equipments/${id}`, {
       method: 'PUT',
@@ -84,18 +110,29 @@ export const equipmentApi = {
     await apiRequest(`/equipments/${id}`, {
       method: 'DELETE'
     })
-  }
-};
+  },
 
-export interface EquipmentFormData {
-  name: string
-  categoryId: number
-  model: string
-  manufacturer: string
-  specifications: string
-  conditionStatus: string
-  purchaseDate: string
-  serialNumber: string
-  quantity: number
-  imageUrl: string
-}
+  search: (query: string, page = 0, limit = 50) => {
+  return apiRequest<PaginatedResponse<Equipment>>(`/equipments/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+},
+
+  uploadImage: async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    const token = localStorage.getItem('authToken')
+    const response = await fetch('http://localhost:8080/api/uploads/equipment-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    })
+    
+    const result = await response.json()
+    if (!response.ok) {
+      throw new Error(result.error?.message || 'Failed to upload image')
+    }
+    return result.imageUrl
+  },
+};

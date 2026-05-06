@@ -1,7 +1,7 @@
 package com.quantix.backend.security;
 
-import com.quantix.backend.dto.AuthResponse;
-import com.quantix.backend.service.AuthService;
+import com.quantix.backend.auth.dto.AuthResponse;
+import com.quantix.backend.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

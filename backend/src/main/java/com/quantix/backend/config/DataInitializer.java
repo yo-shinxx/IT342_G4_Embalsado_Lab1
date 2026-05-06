@@ -1,6 +1,6 @@
 package com.quantix.backend.config;
 
-import com.quantix.backend.service.CategoryService;
+import com.quantix.backend.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

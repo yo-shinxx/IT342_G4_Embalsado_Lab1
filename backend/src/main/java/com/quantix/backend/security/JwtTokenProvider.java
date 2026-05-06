@@ -1,6 +1,6 @@
 package com.quantix.backend.security;
 
-import com.quantix.backend.entity.User;
+import com.quantix.backend.auth.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

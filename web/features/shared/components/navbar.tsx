@@ -4,10 +4,10 @@ import { Box, CalendarDays, FileText, LogOut, PackageSearch, Users } from 'lucid
 import Logo from './logo'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { logoutUser } from '@/lib/api/auth'
+import { logoutUser } from '@/features/auth/lib/auth'
 import { toast } from 'sonner'
-import { apiRequest } from '@/lib/api'
-import { useRole } from '@/components/role-provider'
+import { apiRequest } from '@/features/shared/lib/api'
+import { useRole } from '@/features/shared/components/role-provider'
 
 type HeaderUser = {
   email: string

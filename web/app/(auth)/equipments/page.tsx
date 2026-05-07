@@ -3,17 +3,17 @@
 import { Plus, MoreVertical, PackageSearch } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Background from '@/components/background'
-import Navbar from '@/components/navbar'
-import Header from '@/components/header'
-import SearchBar from '@/components/ui/search-bar'
-import FilterDropdown from '@/components/ui/filter-dropdown'
-import ViewToggle from '@/components/ui/view-toggle'
-import AddEquipmentModal from '@/components/modals/add-equipment-modal'
-import { equipmentApi, Equipment, Category } from '@/lib/api/equipment'
-import { apiRequest } from '@/lib/api'
+import Background from '@/features/shared/components/background'
+import Navbar from '@/features/shared/components/navbar'
+import Header from '@/features/shared/components/header'
+import SearchBar from '@/features/shared/components/ui/search-bar'
+import FilterDropdown from '@/features/shared/components/ui/filter-dropdown'
+import ViewToggle from '@/features/shared/components/ui/view-toggle'
+import AddEquipmentModal from '@/features/equipments/components/modals/add-equipment-modal'
+import { equipmentApi, Equipment, Category } from '@/features/equipments/api/equipment'
+import { apiRequest } from '@/features/shared/lib/api'
 import { toast } from 'sonner'
-import { useRole } from '@/components/role-provider'
+import { useRole } from '@/features/shared/components/role-provider'
 
 export default function EquipmentPage() {
   const router = useRouter()
@@ -135,9 +135,6 @@ export default function EquipmentPage() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold">Lab Equipments</h1>
-              <p className="text-slate-400 text-sm mt-1">
-                {totalItems} total equipment{totalItems !== 1 ? 's' : ''}
-              </p>
             </div>
             {isCoordinator && (
               <button 

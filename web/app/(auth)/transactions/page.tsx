@@ -8,12 +8,12 @@ import {
   Clock,
   FileText,
 } from 'lucide-react'
-import Background from '@/components/background'
-import Navbar from '@/components/navbar'
-import Header from '@/components/header'
-import SearchBar from '@/components/ui/search-bar'
-import FilterDropdown from '@/components/ui/filter-dropdown'
-import { transactionApi, TransactionLog } from '@/lib/api/transaction'
+import Background from '@/features/shared/components/background'
+import Navbar from '@/features/shared/components/navbar'
+import Header from '@/features/shared/components/header'
+import SearchBar from '@/features/shared/components/ui/search-bar'
+import FilterDropdown from '@/features/shared/components/ui/filter-dropdown'
+import { transactionApi, TransactionLog } from '@/features/transactions/api/transaction'
 import { toast } from 'sonner'
 
 export default function TransactionsPage() {
@@ -162,13 +162,6 @@ export default function TransactionsPage() {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold">Transaction History</h1>
-              <p className="text-slate-400 text-sm mt-1">
-                {totalItems} total transaction{totalItems !== 1 ? 's' : ''}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-slate-400">
-              <History className="w-4 h-4" />
-              Complete audit trail
             </div>
           </div>
 

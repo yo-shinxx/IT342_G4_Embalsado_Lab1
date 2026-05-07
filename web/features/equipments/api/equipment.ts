@@ -1,4 +1,4 @@
-import { apiRequest } from '@/lib/api';
+import { apiRequest } from '@/features/shared/lib/api';
 
 export interface Category {
   id: number;

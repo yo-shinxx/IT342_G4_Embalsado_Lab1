@@ -3,12 +3,12 @@
 import { ArrowRight, FileText, PackageSearch, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Background from '@/components/background'
-import Navbar from '@/components/navbar'
-import Header from '@/components/header'
+import Background from '@/features/shared/components/background'
+import Navbar from '@/features/shared/components/navbar'
+import Header from '@/features/shared/components/header'
 import { toast } from 'sonner'
-import { TransactionLog, transactionApi } from '@/lib/api/transaction'
-import { equipmentApi, Equipment } from '@/lib/api/equipment'
+import { TransactionLog, transactionApi } from '@/features/transactions/api/transaction'
+import { equipmentApi, Equipment } from '@/features/equipments/api/equipment'
 
 const getActionDisplay = (action: string) => {
   switch (action) {

@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/api";
+import { apiRequest } from "@/features/shared/lib/api";
 import { AuthResponse } from "@/types/auth";
 
 type RegisterPayload = { firstName: string; lastName: string; email: string; password: string };

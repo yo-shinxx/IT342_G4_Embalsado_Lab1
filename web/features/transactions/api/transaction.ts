@@ -1,5 +1,5 @@
-import { apiRequest } from '@/lib/api'
-import { PaginatedResponse } from './equipment'
+import { apiRequest } from '@/features/shared/lib/api'
+import { PaginatedResponse } from '@/features/equipments/api/equipment'
 
 export interface Transaction {
   id: number

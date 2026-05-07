@@ -1,5 +1,5 @@
 import OutlineButton from './ui/outline-button'
-import { getGoogleAuthUrl } from '@/lib/api/auth'
+import { getGoogleAuthUrl } from '@/features/auth/lib/auth'
 
 interface GoogleButtonProps {
   text?: string

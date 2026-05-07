@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { apiRequest } from '@/lib/api'
+import { apiRequest } from '@/features/shared/lib/api'
 
 interface RoleContextType {
   role: string | null

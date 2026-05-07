@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { X, AlertCircle } from 'lucide-react'
-import { equipmentApi, EquipmentDetail } from '@/lib/api/equipment'
+import { equipmentApi, EquipmentDetail } from '@/features/equipments/api/equipment'
 import { toast } from 'sonner'
 
 interface UpdateStatusModalProps {

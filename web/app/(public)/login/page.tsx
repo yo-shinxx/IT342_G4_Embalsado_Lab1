@@ -5,15 +5,15 @@ import Link from 'next/link'
 import { useRouter } from "next/navigation"
 import { useState } from 'react'
 import type { FormEvent } from "react"
-import { loginUser } from "@/lib/api/auth"
+import { loginUser } from "@/features/auth/lib/auth"
 import { toast } from 'sonner'
-import Background from '@/components/background'
-import Logo from '@/components/logo'
-import AuthCard from '@/components/ui/auth-card'
-import FormInput from '@/components/ui/form-input'
-import PrimaryButton from '@/components/ui/primary-button'
-import Divider from '@/components/ui/divider'
-import GoogleButton from '@/components/google-button'
+import Background from '@/features/shared/components/background'
+import Logo from '@/features/shared/components/logo'
+import AuthCard from '@/features/shared/components/ui/auth-card'
+import FormInput from '@/features/shared/components/ui/form-input'
+import PrimaryButton from '@/features/shared/components/ui/primary-button'
+import Divider from '@/features/shared/components/ui/divider'
+import GoogleButton from '@/features/shared/components/google-button'
 
 export default function LoginPage() {
   const router = useRouter()

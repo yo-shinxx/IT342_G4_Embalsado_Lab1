@@ -3,6 +3,8 @@ package com.quantix.backend.auth.service;
 import com.quantix.backend.auth.dto.*;
 import com.quantix.backend.auth.entity.User;
 import com.quantix.backend.auth.entity.UserRole;
+import com.quantix.backend.auth.event.UserLoginEvent;
+import com.quantix.backend.auth.event.UserRegisterEvent;
 import com.quantix.backend.auth.repository.UserRepository;
 import com.quantix.backend.auth.repository.UserRoleRepository;
 import com.quantix.backend.security.JwtTokenProvider;

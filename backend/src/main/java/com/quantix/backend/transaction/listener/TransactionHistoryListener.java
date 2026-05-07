@@ -1,6 +1,6 @@
 package com.quantix.backend.transaction.listener;
 
-import com.quantix.backend.auth.dto.UserRegisterEvent;
+import com.quantix.backend.auth.event.UserRegisterEvent;
 import com.quantix.backend.equipment.event.EquipmentArchivedEvent;
 import com.quantix.backend.equipment.event.EquipmentCreatedEvent;
 import com.quantix.backend.equipment.event.EquipmentStatusChangedEvent;

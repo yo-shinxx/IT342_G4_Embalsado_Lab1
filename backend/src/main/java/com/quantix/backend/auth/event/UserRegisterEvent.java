@@ -1,4 +1,4 @@
-package com.quantix.backend.auth.dto;
+package com.quantix.backend.auth.event;
 
 import lombok.*;
 

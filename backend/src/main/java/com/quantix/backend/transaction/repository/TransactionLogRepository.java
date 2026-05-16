@@ -1,0 +1,36 @@
+package com.quantix.backend.transaction.repository;
+
+import com.quantix.backend.transaction.entity.TransactionLog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Repository
+public interface TransactionLogRepository extends JpaRepository<TransactionLog, Long> {
+
+    List<TransactionLog> findByUserIdOrderByTimestampDesc(Long userId);
+
+    Page<TransactionLog> findByUserId(Long userId, Pageable pageable);
+
+    Page<TransactionLog> findByAction(String action, Pageable pageable);
+
+    List<TransactionLog> findByAction(String action);
+
+    List<TransactionLog> findByTimestampBetween(LocalDateTime start, LocalDateTime end);
+
+    List<TransactionLog> findByUserIdAndAction(Long userId, String action);
+
+    long countByUserId(Long userId);
+
+    @Query("SELECT t FROM TransactionLog t ORDER BY t.timestamp DESC")
+    List<TransactionLog> findRecentTransactions(Pageable pageable);
+
+    @Query("SELECT t FROM TransactionLog t WHERE t.email LIKE %:keyword% OR t.details LIKE %:keyword%")
+    List<TransactionLog> searchByKeyword(@Param("keyword") String keyword);
+}

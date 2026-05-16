@@ -1,9 +1,9 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/features/shared/components/ui/button'
 import { ArrowRight, Box, Database, Shield, Zap, BarChart3, Users, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
-import Background from '@/components/background'
+import Background from '@/features/shared/components/background'
 import { useEffect, useState } from 'react'
 
 export default function Home() {

@@ -1,6 +1,6 @@
 package com.quantix.backend.security;
 
-import com.quantix.backend.entity.User;
+import com.quantix.backend.auth.entity.User;
 
 public interface TokenProvider {
 

@@ -1,0 +1,22 @@
+package com.quantix.backend.auth.repository;
+
+import com.quantix.backend.auth.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+    boolean existsByEmail(String email);
+
+    List<User> findAllByIsActive(Boolean isActive);
+
+    default Long getUserIdByEmail(String email) {
+        return findByEmail(email)
+                .map(User::getUserId)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
+}

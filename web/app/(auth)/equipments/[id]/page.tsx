@@ -15,15 +15,15 @@ import {
   Building2,
   Boxes
 } from 'lucide-react'
-import Background from '@/components/background'
-import Navbar from '@/components/navbar'
-import Header from '@/components/header'
-import { equipmentApi, EquipmentDetail } from '@/lib/api/equipment'
+import Background from '@/features/shared/components/background'
+import Navbar from '@/features/shared/components/navbar'
+import Header from '@/features/shared/components/header'
+import { equipmentApi, EquipmentDetail } from '@/features/equipments/api/equipment'
 import { toast } from 'sonner'
-import { useRole } from '@/components/role-provider'
-import EditEquipmentModal from '@/components/modals/edit-equipment-modal'
-import UpdateStatusModal from '@/components/modals/update-status-modal'
-import ConfirmArchiveModal from '@/components/modals/confirm-archive-modal'
+import { useRole } from '@/features/shared/components/role-provider'
+import EditEquipmentModal from '@/features/equipments/components/modals/edit-equipment-modal'
+import UpdateStatusModal from '@/features/equipments/components/modals/update-status-modal'
+import ConfirmArchiveModal from '@/features/equipments/components/modals/confirm-archive-modal'
 
 export default function EquipmentDetailPage() {
   const router = useRouter()
